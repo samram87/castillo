@@ -5,7 +5,7 @@
  */
 
 var APP={
-    url:"http://192.168.1.8/core/pedidos/",//url="http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos"
+    url:"http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos/",//url="http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos"
     login:"index.html",
     dashboard:"dashboard.html"
 };
@@ -15,9 +15,19 @@ $(function(){
     if(!loc.includes(APP.login)){
         if(!isJsonString(getLS("usuario"))){
             goto(APP.login);
+        }else if(getLS("fechaActualizacion")!=getFecha()){
+            localStorage.removeItem("usuario");
+            goto(APP.login);
         }
     }
-})
+    
+    $(".actualizacion").html("Ultima Actualización: "+getLS("fechaActualizacion"));
+ });
+ 
+function cerrarSesion(){
+     localStorage.removeItem("usuario");
+            goto(APP.login);
+}
 
 function goto(url){
     window.location=url;
@@ -28,7 +38,29 @@ function getLS(name){
 }
 
 function setLS(name,value){
+    if((typeof value)!="string" ){
+        value=JSON.stringify(value);
+    }
     window.localStorage.setItem(name,value);
+}
+
+
+function filtrarListado(idInput,claseListado){
+    var val=$("#"+idInput).val();
+        if(val!=""){
+            val=val.toUpperCase();
+            val=".*"+val.replace(" ",".*")+".*";
+            var re=new RegExp(val,"g");
+            $("."+claseListado).each(function(i,item){
+                if($(item).html().match(re)){
+                    $(item).css("display","block");
+                }else{
+                    $(item).css("display","none");
+                }
+            });
+        }else{
+            $("."+claseListado).css("display","block");
+        }
 }
 
 function isJsonString(str) {
@@ -58,6 +90,62 @@ function checkInternet(){
     else{return true;}
 }
 
+
+function toDataTable(selector){
+    $(selector).DataTable({
+        "language":{"url":"vendor/datatables/spanish.json"}
+    });
+}
+
+
+function getIdUsuario(){
+     var usuario=JSON.parse(getLS("usuario"));
+     return usuario.idUsuario;
+}
+
+function getFecha(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //Enero es 0!
+    var yyyy = today.getFullYear();
+    //Añado 0 cuando es menor a 10
+    if (dd < 10) { dd = '0' + dd;}
+    if (mm < 10) { mm = '0' + mm;}
+    
+    return dd + '/' + mm + '/' + yyyy;
+}
+
+function round(num){
+    return Math.round(num * 100) / 100;
+}
+
+function verificarGPS(lat,long){
+    try{
+        navigator.geolocation.getCurrentPosition(function(position){
+            var curLat=position.coords.latitude;
+            var curLong=position.coords.longitud;
+            
+        });
+    }catch(e){
+        console.log(e);
+    }
+    
+}
+
+function arePointsNear(checkPoint, centerPoint, km) {
+    var ky = 40000 / 360;
+    var kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+    var dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
+    var dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
+    return Math.sqrt(dx * dx + dy * dy) <= km;
+}
+
+var vasteras = { lat: 59.615911, lng: 16.544232 };
+var stockholm = { lat: 59.345635, lng: 18.059707 };
+
+var n = arePointsNear(vasteras, stockholm, 10);
+
+console.log(n);
 
 /*
  * CryptoJS

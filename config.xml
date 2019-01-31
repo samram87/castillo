@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget id="net.cienfuegos.pedidos" version="0.0.1">
+    <name>Comercial Castillo</name>
+    <description>
+        Aplicacion para pedidos de Comercial Castillos.
+    </description>
+    <author email="samsagaz87@gmail.com" href="http://cordova.io">
+        Samuel Ramirez
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="Fullscreen" value="true" />
+    <preference name="phonegap-version" value="cli-8.0.0" />
+    <plugin name="cordova-plugin-geolocation" spec="~4">
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Esta aplicacion utiliza geolocalización." />
+    </plugin>
+    <platform name="android">
+        <uses-permission name="android.permission.ACCESS_COARSE_LOCATION" />
+        <uses-permission name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    </platform>
+     <icon src="icon.png" platform="android" width="180" height="180" />
+</widget>
