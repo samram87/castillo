@@ -7,10 +7,13 @@
 var APP={
     url:"http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos/",//url="http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos"
     login:"index.html",
-    dashboard:"dashboard.html"
+    dashboard:"dashboard.html",
+    latitud:null,
+    longitud:null
 };
 
 $(function(){
+    verificarGPS();
     var loc=window.location.href;
     if(!loc.includes(APP.login)){
         if(!isJsonString(getLS("usuario"))){
@@ -122,14 +125,22 @@ function round(num){
 function verificarGPS(lat,long){
     try{
         navigator.geolocation.getCurrentPosition(function(position){
-            var curLat=position.coords.latitude;
-            var curLong=position.coords.longitud;
+            APP.latitud=position.coords.latitude;
+            APP.longitud=position.coords.longitude;
             
         });
     }catch(e){
         console.log(e);
     }
     
+}
+
+function areWeNear(cliente,km){
+    var ky = 40000 / 360;
+    var kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+    var dx = Math.abs(APP.longitud - cliente.LONGITUD) * kx;
+    var dy = Math.abs(APP.latitud - cliente.LATITUD) * ky;
+    return Math.sqrt(dx * dx + dy * dy) <= km;
 }
 
 function arePointsNear(checkPoint, centerPoint, km) {
@@ -139,13 +150,6 @@ function arePointsNear(checkPoint, centerPoint, km) {
     var dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
     return Math.sqrt(dx * dx + dy * dy) <= km;
 }
-
-var vasteras = { lat: 59.615911, lng: 16.544232 };
-var stockholm = { lat: 59.345635, lng: 18.059707 };
-
-var n = arePointsNear(vasteras, stockholm, 10);
-
-console.log(n);
 
 /*
  * CryptoJS

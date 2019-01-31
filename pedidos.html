@@ -64,7 +64,7 @@
                         <li class="breadcrumb-item">
                             <a href="dashboard.html">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">No Venta</li>
+                        <li class="breadcrumb-item active">Pedidos</li>
                     </ol>
 
                     <form>
@@ -77,15 +77,81 @@
                             <label for="cliente">Cliente</label>
                             <input type="text" disabled="disabled" class="form-control" id="cliente">
                         </div>
-                        
+                        <div class="form-group">
+                            <label for="productos">Producto</label>
+                            <select class="form-control" id="productos">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="uom">UOM</label>
+                            <select class="form-control" id="uom">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidad">
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio Unitario</label>
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" id="precio" placeholder="Precio Unitario"  aria-describedby="button-precio">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="button-precio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Precios Disponibles
+                                    </button>
+                                    <div class="dropdown-menu" id="preciosDisponibles" aria-labelledby="button-precio">
+                                        <h6 class="dropdown-header">Seleccione un producto</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="observacion">Observacion Linea</label>
+                            <textarea class="form-control" id="observacionLinea" rows="2"></textarea>
+                        </div>
+                        <!-- HIDDEN -->
+                        <input type="hidden" id="tipoPrecio">
+                        <input type="hidden" id="idPrecio">
+                        <input type="hidden" id="idLinea" value="">
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="button" class="btn btn-primary" id="addLinea"><i class="fas fa-plus"></i> Agregar Linea</button>
+                            </div>
+                        </div>
+                        <!--
+                        Listado Productos
+                        -->
+
+                        <div class="table-responsive" >
+                            <table class="table table-bordered" id="productosAgregados" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cnt</th>
+                                        <th>Precio</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th id="totalProductos">0 Items</th>
+                                        <th id="totalCantidad">0</th>
+                                        <th colspan="2" id="totalPedido">Total: 0.00</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
 
                         <div class="form-group">
-                            <label for="observacion">Razon de la No Venta</label>
+                            <label for="observacion">Observacion del Pedido</label>
                             <textarea class="form-control" id="observacion" rows="3"></textarea>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-10">
-                                <button type="button" class="btn btn-success" id="addPedido"><i class="fas fa-save"></i> Guardar</button>
+                                <button type="button" class="btn btn-success" id="addPedido"><i class="fas fa-save"></i> Guardar Pedido</button>
                             </div>
                         </div>
                     </form>
@@ -193,7 +259,7 @@
         <script src="app/control.js"></script>
 
         <!-- Archivo Dashboard -->
-        <script src="app/noventa.js"></script>
+        <script src="app/pedidos.js"></script>
     </body>
 
 </html>
