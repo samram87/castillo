@@ -8,10 +8,13 @@
         Samuel Ramirez
     </author>
     <content src="index.html" />
+    <access origin="*" />
     <preference name="Fullscreen" value="true" />
     <preference name="phonegap-version" value="cli-8.0.0" />
     <plugin name="cordova-plugin-geolocation" spec="~4">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Esta aplicacion utiliza geolocalización." />
+    </plugin>
+    <plugin name="cordova-plugin-whitelist">
     </plugin>
     <platform name="android">
         <uses-permission name="android.permission.ACCESS_COARSE_LOCATION" />
