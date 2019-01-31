@@ -9,7 +9,7 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <preference name="Fullscreen" value="true" />
+    <preference name="Fullscreen" value="false" />
     <preference name="phonegap-version" value="cli-8.0.0" />
     <plugin name="cordova-plugin-geolocation" spec="~4">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Esta aplicacion utiliza geolocalización." />
