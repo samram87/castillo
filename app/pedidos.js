@@ -184,7 +184,7 @@ function actualizarPedido() {
                 );
         $(tr).append($('<td>').html(item.cantidad));
         $(tr).append($('<td>').html(item.precio));
-
+        $(tr).append($('<td>').html(item.total));
         $("#productosAgregados tbody").append(tr);
     });
 
