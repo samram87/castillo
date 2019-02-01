@@ -5,41 +5,44 @@ var pedido = {};
 var cliente = {};
 var precioMasBajo = 1000000;
 var lineaActual = 0;
+var surtido=[];
 $(document).ready(function () {
     productos = JSON.parse(getLS("Productos"));
     clientes = JSON.parse(getLS("Clientes"));
     cliente = getClienteActual();
-    if(pedidoExistente(cliente)){
-        pedido=getPedido(cliente);
+    if (pedidoExistente(cliente)) {
+        pedido = getPedido(cliente);
         actualizarPedido();
         $("#observacion").val(pedido.observacion);
-    }else{
+    } else {
         pedido.cliente = cliente;
         pedido.lineas = [];
         pedido.total = 0;
         pedido.items = 0;
         pedido.totalLineas = 0;
-        pedido.observacion="";
+        pedido.observacion = "";
     }
-    if(cliente.LATITUD==""){
+    if (cliente.LATITUD == "") {
         $("#alertaGPS").show();
-        setTimeout(function(){
-            pedido.cliente.LATITUD=APP.latitud;
-            pedido.cliente.LONGITUD=APP.longitud;
-            pedido.latitud=APP.latitud;
-            pedido.longitud=APP.longitud;
-        },2000);
-    }else{
-        setTimeout(function(){
-            if(!areWeNear(cliente,0.5)){
+        setTimeout(function () {
+            pedido.cliente.LATITUD = APP.latitud;
+            pedido.cliente.LONGITUD = APP.longitud;
+            pedido.latitud = APP.latitud;
+            pedido.longitud = APP.longitud;
+        }, 2000);
+    } else {
+        setTimeout(function () {
+            if (!areWeNear(cliente, 0.5)) {
                 alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                setTimeout(function(){goto("dashboard.html");},2000);
-            }else{
+                setTimeout(function () {
+                    goto("dashboard.html");
+                }, 2000);
+            } else {
                 //Guardamos en el pedido la lat,long desde donde se guardo
-                pedido.latitud=APP.latitud;
-                pedido.longitud=APP.longitud;
+                pedido.latitud = APP.latitud;
+                pedido.longitud = APP.longitud;
             }
-        },2000);
+        }, 2000);
     }
 
 
@@ -60,6 +63,7 @@ $(document).ready(function () {
         updatePrecio()
     });
     $("#uom").change(function () {
+        $("#precio").val("");
         updatePrecio();
     });
     $("#cantidad").change(function () {
@@ -70,8 +74,8 @@ $(document).ready(function () {
             var linea = {};
             linea.producto = producto;
             linea.cantidad = parseFloat($("#cantidad").val());
-            linea.oum = producto.uom[$("#uom").val()];
-            linea.observacion=$("#observacionLinea").val();
+            linea.uom = producto.uom[$("#uom").val()];
+            linea.observacion = $("#observacionLinea").val();
             var tipoPrecio = $("#tipoPrecio").val();
             var idPrecio = parseInt($("#idPrecio").val());
             linea.tipoPrecio = tipoPrecio;
@@ -87,63 +91,66 @@ $(document).ready(function () {
             actualizarPedido();
         }
     });
-    
-    $("#addPedido").click(function(){
-        pedido.tipo="PEDIDO";
-        pedido.observacion=$("#observacion").val();
-        var pedidos=JSON.parse(getLS("pedidos"));
-        if(pedidoExistente(cliente)){
-            var i=getPosicionPedido(cliente);
-            pedidos.splice(i,1,pedido);
-        }else{
+
+    $("#addPedido").click(function () {
+        pedido.tipo = "PEDIDO";
+        pedido.status = "LOCAL";
+        pedido.observacion = $("#observacion").val();
+        var pedidos = JSON.parse(getLS("pedidos"));
+        if (pedidoExistente(cliente)) {
+            var i = getPosicionPedido(cliente);
+            pedidos.splice(i, 1, pedido);
+        } else {
             pedidos.push(pedido);
-            var cvs=JSON.parse(getLS("clientesVisitados"));
-            var cv={};
-            cv.codigoCliente=cliente.codigo;
-            cv.tipo="PEDIDO";
+            var cvs = JSON.parse(getLS("clientesVisitados"));
+            var cv = {};
+            cv.codigoCliente = cliente.codigo;
+            cv.tipo = "PEDIDO";
             cvs.push(cv);
-            setLS("clientesVisitados",JSON.stringify(cvs));
+            setLS("clientesVisitados", JSON.stringify(cvs));
         }
-        setLS("pedidos",JSON.stringify(pedidos));
+        setLS("pedidos", JSON.stringify(pedidos));
         alerta("Pedido Guardado con exito");
-        setTimeout(function(){goto("dashboard.html");},2000);
+        setTimeout(function () {
+            goto("dashboard.html");
+        }, 2000);
     });
 
 });
 
-function pedidoExistente(clienteActual){
-    var pedidos=JSON.parse(getLS("pedidos"));
-    var found=false;
-    $.each(pedidos,function(i,item){
-        if(clienteActual.codigo==item.cliente.codigo){
-            found=true;
+function pedidoExistente(clienteActual) {
+    var pedidos = JSON.parse(getLS("pedidos"));
+    var found = false;
+    $.each(pedidos, function (i, item) {
+        if (clienteActual.codigo == item.cliente.codigo) {
+            found = true;
         }
     });
     return found;
 }
 
-function getPedido(clienteActual){
-    var pedidos=JSON.parse(getLS("pedidos"));
-    var p=null;
-    $.each(pedidos,function(i,item){
-        if(clienteActual.codigo==item.cliente.codigo){
-            p= item;
+function getPedido(clienteActual) {
+    var pedidos = JSON.parse(getLS("pedidos"));
+    var p = null;
+    $.each(pedidos, function (i, item) {
+        if (clienteActual.codigo == item.cliente.codigo) {
+            p = item;
         }
     });
     return p;
 }
 
-function getPosicionPedido(clienteActual){
-    var pedidos=JSON.parse(getLS("pedidos"));
-    $.each(pedidos,function(i,item){
-        if(clienteActual.codigo==item.cliente.codigo){
+function getPosicionPedido(clienteActual) {
+    var pedidos = JSON.parse(getLS("pedidos"));
+    $.each(pedidos, function (i, item) {
+        if (clienteActual.codigo == item.cliente.codigo) {
             return i;
         }
     });
     return -1;
 }
 
-function limpiarLinea(){
+function limpiarLinea() {
     $("#tipoPrecio").val("");
     $("#observacionLinea").val("");
     $("#idPrecio").val("");
@@ -151,7 +158,9 @@ function limpiarLinea(){
     $("#cantidad").val("");
     $("#uom").empty();
     $("#productos").empty();
-    producto=null;
+    $("#productosHijos tbody").empty();
+    $("#divProductosHijos").hide();
+    producto = null;
     updatePrecio();
     precioMasBajo = 1000000;
 }
@@ -160,7 +169,7 @@ function limpiarLinea(){
 function actualizarPedido() {
     pedido.total = 0;
     pedido.items = 0;
-    pedido.totalLineas = pedido.lineas.length + 1;
+    pedido.totalLineas = pedido.lineas.length;
     $.each(pedido.lineas, function (i, item) {
         pedido.total += item.total;
         pedido.items += item.cantidad;
@@ -175,16 +184,15 @@ function actualizarPedido() {
                 );
         $(tr).append($('<td>').html(item.cantidad));
         $(tr).append($('<td>').html(item.precio));
-        $(tr).append($('<td>').html(item.total));
 
         $("#productosAgregados tbody").append(tr);
     });
-    
+
 }
 
 function deleteLine(pos) {
     if (confirm("Desea eliminar esta linea")) {
-        pedido.lineas.splice(pos,1);
+        pedido.lineas.splice(pos, 1);
         actualizarPedido();
     }
 }
@@ -233,7 +241,12 @@ function clearSearchProd() {
 
 function listarProductos() {
     $.each(productos, function (i, item) {
-        $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + '</a>');
+        if(item.hijos>0){
+            $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item  list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + ' <i class="fas fa-list"></i></a>');
+        }else{
+            $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + '</a>');
+        }
+        
     });
 }
 
@@ -252,6 +265,41 @@ function setProducto(pos) {
         $("#uom").append("<option value='" + i + "'>" + item.nombre + "</option>");
     });
     updatePrecio();
+    if (producto.hijos > 0) {
+        console.log("producto tiene hijos");
+
+        var prods = getProductosHijos(producto.codigo);
+        $("#productosHijos tbody").empty();
+        $.each(prods, function (i, item) {
+            var tr = $('<tr>').append(
+                    $('<td>').html(item.nombre)
+                    );
+            var select='<select class="form-control" id="uom" corr="'+i+'">';
+            $.each(item.uom, function (j, uom) {
+                select+="<option value='" + j + "'>" + uom.nombre + "</option>";
+            });
+            select +="</select>"
+            $(tr).append($('<td>').html(select));
+            $(tr).append($('<td>').html('<input type="number" class="form-control cnt_surtido" corr="'+i+'" >'));
+
+
+            $("#productosHijos tbody").append(tr);
+        });
+        $("#divProductosHijos").show();
+    }else{
+        $("#productosHijos tbody").empty();
+        $("#divProductosHijos").hide();
+    }
+}
+
+function getProductosHijos(codigo_padre) {
+    var prods = [];
+    $.each(productos, function (i, item) {
+        if (item.padre == codigo_padre) {
+            prods.push(item);
+        }
+    });
+    return prods;
 }
 
 function updatePrecio() {
@@ -306,15 +354,4 @@ function setPrecio(tipo, i, precio) {
     $("#tipoPrecio").val(tipo);
     $("#idPrecio").val(i);
     $("#precio").val(precio);
-}
-
-
-
-
-function nuevoPedido(codigoCliente) {
-    alerta("PENDIENTE");
-}
-function noVenta(codigoCliente) {
-
-    goto("noventa.html");
 }

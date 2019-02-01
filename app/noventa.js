@@ -38,6 +38,7 @@ $(document).ready(function () {
     
     $("#addPedido").click(function(){
         pedido.tipo="NOVENTA";
+        pedido.status="LOCAL";
         pedido.observacion=$("#observacion").val();
         if(pedido.observacion==""){
             alerta("Por Favor Indique la razon de la 'No Venta'");
@@ -53,7 +54,7 @@ $(document).ready(function () {
         setLS("clientesVisitados",JSON.stringify(cvs));
         setLS("pedidos",JSON.stringify(pedidos));
         alerta("Registro Guardado con exito");
-        setTimeout(function(){goto("dashboard.html");},2000);
+        setTimeout(function(){goto("dashboard.html");},1500);
     });
 
 });
