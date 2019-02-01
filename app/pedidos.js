@@ -336,29 +336,28 @@ function updatePrecio() {
     $("#preciosDisponibles").append('<h6 class="dropdown-header">Detalle</h6>');
     $.each(producto.uom[uom].preciosTienda, function(i, item) {
 
-        if (parseFloat(cnt) > parseFloat(item.desde)) {
+        if (parseFloat(cnt) > parseFloat(item.desde) && parseFloat(cnt) < parseFloat(item.hasta)) {
             if (parseFloat(item.precio) < precioMasBajo) {
                 precioMasBajo = parseFloat(item.precio);
             }
-            $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;"  onclick="setPrecio(\'D\',' + i + ',' + item.precio + ' )" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
+            $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;"  onclick="setPrecio(\'D\',' + i + ',' + item.precio + ' )" >$' + item.precio + '</a>');
         } else {
-            $("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
+            //$("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
         }
     });
-    if (cliente.clase == "M") {
 
-        $("#preciosDisponibles").append('<div class="dropdown-divider"></div><h6 class="dropdown-header">Mayoreo</h6>');
-        $.each(producto.uom[uom].precios, function(i, item) {
-            if (parseFloat(cnt) > parseFloat(item.desde)) {
-                if (parseFloat(item.precio) < precioMasBajo) {
-                    precioMasBajo = parseFloat(item.precio);
-                }
-                $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;" onclick="setPrecio(\'M\',' + i + ',' + item.precio + ' )" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
-            } else {
-                $("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
+
+    $("#preciosDisponibles").append('<div class="dropdown-divider"></div><h6 class="dropdown-header">Mayoreo</h6>');
+    $.each(producto.uom[uom].precios, function(i, item) {
+        if (parseFloat(cnt) > parseFloat(item.desde) && parseFloat(cnt) < parseFloat(item.hasta)) {
+            if (parseFloat(item.precio) < precioMasBajo) {
+                precioMasBajo = parseFloat(item.precio);
             }
-        });
-    }
+            $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;" onclick="setPrecio(\'M\',' + i + ',' + item.precio + ' )" >$' + item.precio + '</a>');
+        } else {
+            //$("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
+        }
+    });
 }
 
 function setPrecio(tipo, i, precio) {
