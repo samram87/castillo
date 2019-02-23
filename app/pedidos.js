@@ -6,7 +6,7 @@ var cliente = {};
 var precioMasBajo = 1000000;
 var lineaActual = 0;
 var surtido = [];
-$(document).ready(function() {
+$(document).ready(function () {
     productos = JSON.parse(getLS("Productos"));
     clientes = JSON.parse(getLS("Clientes"));
     cliente = getClienteActual();
@@ -24,17 +24,17 @@ $(document).ready(function() {
     }
     if (cliente.LATITUD == "") {
         $("#alertaGPS").show();
-        setTimeout(function() {
+        setTimeout(function () {
             pedido.cliente.LATITUD = APP.latitud;
             pedido.cliente.LONGITUD = APP.longitud;
             pedido.latitud = APP.latitud;
             pedido.longitud = APP.longitud;
         }, 2000);
     } else {
-        setTimeout(function() {
+        setTimeout(function () {
             if (!areWeNear(cliente, 0.5)) {
                 alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                setTimeout(function() {
+                setTimeout(function () {
                     goto("dashboard.html");
                 }, 2000);
             } else {
@@ -47,31 +47,32 @@ $(document).ready(function() {
 
 
     listarProductos();
-    $("#productos").click(function() {
+    $("#productos").click(function () {
         $("#modalProductos").modal('show');
         return false;
     });
     //Creando funcion que filtra los elemenots de los productos
-    $("#buscadorProductos").on('input', function(e) {
+    $("#buscadorProductos").on('input', function (e) {
         filtrarListado("buscadorProductos", "item-productos");
     });
 
     //Inicio colocando los modelos del pedido.
     $("#cliente").val(cliente.nombre);
 
-    $("#cantidad").on('input', function(e) {
+    $("#cantidad").on('input', function (e) {
         updatePrecio()
     });
-    $("#uom").change(function() {
+    $("#uom").change(function () {
         $("#precio").val("");
         updatePrecio();
     });
-    $("#cantidad").change(function() {
+    $("#cantidad").change(function () {
         updatePrecio();
     });
-    $("#addLinea").click(function() {
+    $("#addLinea").click(function () {
         if (validarLinea()) {
             var linea = {};
+            var iUom=$("#uom").val();
             linea.producto = producto;
             linea.cantidad = parseFloat($("#cantidad").val());
             linea.uom = producto.uom[$("#uom").val()];
@@ -86,20 +87,82 @@ $(document).ready(function() {
             }
             linea.precio = parseFloat($("#precio").val());
             linea.total = round(linea.cantidad * linea.precio);
+            linea.esRegalo = false;
+            linea.padre = null;
+            linea.tieneHijos = false;
+            linea.cantidadHijos=0;
+            if (producto.hijos > 0) {
+                var surtido=[];
+                $(".cnt_surtido").each(function(i,item){
+                    if($(item).val()!=''){
+                        //Tiene valor hay que agregarlo
+                        console.log(item);
+                        
+                        var pos=$(item).attr("corr");
+                        console.log(pos);
+                        var cnt=$(item).val();
+                        var surtLine={};
+                        surtLine.hijo=producto.surtido[pos];
+                        surtLine.cnt=cnt;
+                        //surtLine.uom=producto.hijos[pos].uom;
+                        surtido.push(surtLine);
+                    }
+                });
+                linea.surtido=surtido;
+            }
             pedido.lineas.push(linea);
+            
+            var idLineaPadre = pedido.lineas.length - 1;
+            var hijos = false;
+            var cntHijos=0;
+            if (producto.uom[iUom].promos.length > 0) {
+                //Tiene promociones ahora veamos si logra llegar al minimo requerido
+                $.each(producto.uom[$("#uom").val()].promos, function (i, item) {
+                    if (item.cnt_requerida <= linea.cantidad) {
+                        //Se puede agregar el producto pues cumplio el detalle
+                        var lineaProm = {};
+
+                        var prodPromo = getProducto(item.ARTICULO);
+                        lineaProm.producto = prodPromo;
+                        
+                        var cnt=(Math.floor(linea.cantidad/item.cnt_requerida)*item.cnt_regalo);
+                        lineaProm.cantidad = parseFloat(cnt);
+                        var uom = 0;
+                        for (var i = 0; i < prodPromo.uom.length; i++) {
+                            if (prodPromo.uom[i].uom == item.CODI_MEDI) {
+                                uom = i;
+                            }
+                        }
+                        lineaProm.uom = prodPromo.uom[uom];
+                        lineaProm.observacion = $("#observacionLinea").val();
+                        lineaProm.esRegalo = true;
+                        lineaProm.padre = idLineaPadre;
+                        lineaProm.precio = parseFloat(0);
+                        lineaProm.total = round(0);
+                        lineaProm.tieneHijos = false;
+                        pedido.lineas.push(lineaProm);
+                        hijos = true;
+                        cntHijos++;
+                    }
+                });
+                if (hijos) {
+                    pedido.lineas[idLineaPadre].tieneHijos = true;
+                    pedido.lineas[idLineaPadre].cantidadHijos=cntHijos;
+                }
+            }
             limpiarLinea();
             actualizarPedido();
         }
     });
 
-    $("#addPedido").click(function() {
+    $("#addPedido").click(function () {
         pedido.tipo = "PEDIDO";
         pedido.status = "LOCAL";
         pedido.observacion = $("#observacion").val();
         var pedidos = JSON.parse(getLS("pedidos"));
         if (pedidoExistente(cliente)) {
             var i = getPosicionPedido(cliente);
-            pedidos.splice(i, 1, pedido);
+            pedidos.splice(i-1, 1, pedido);
         } else {
             pedidos.push(pedido);
             var cvs = JSON.parse(getLS("clientesVisitados"));
@@ -111,7 +174,7 @@ $(document).ready(function() {
         }
         setLS("pedidos", JSON.stringify(pedidos));
         alerta("Pedido Guardado con exito");
-        setTimeout(function() {
+        setTimeout(function () {
             goto("dashboard.html");
         }, 2000);
     });
@@ -121,7 +184,7 @@ $(document).ready(function() {
 function pedidoExistente(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
     var found = false;
-    $.each(pedidos, function(i, item) {
+    $.each(pedidos, function (i, item) {
         if (clienteActual.codigo == item.cliente.codigo) {
             found = true;
         }
@@ -132,7 +195,7 @@ function pedidoExistente(clienteActual) {
 function getPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
     var p = null;
-    $.each(pedidos, function(i, item) {
+    $.each(pedidos, function (i, item) {
         if (clienteActual.codigo == item.cliente.codigo) {
             p = item;
         }
@@ -142,7 +205,7 @@ function getPedido(clienteActual) {
 
 function getPosicionPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
-    $.each(pedidos, function(i, item) {
+    $.each(pedidos, function (i, item) {
         if (clienteActual.codigo == item.cliente.codigo) {
             return i;
         }
@@ -170,7 +233,7 @@ function actualizarPedido() {
     pedido.total = 0;
     pedido.items = 0;
     pedido.totalLineas = pedido.lineas.length;
-    $.each(pedido.lineas, function(i, item) {
+    $.each(pedido.lineas, function (i, item) {
         pedido.total += item.total;
         pedido.items += item.cantidad;
     });
@@ -178,21 +241,36 @@ function actualizarPedido() {
     $("#totalCantidad").html(pedido.items);
     $("#totalPedido").html("Total: " + pedido.total);
     $("#productosAgregados tbody").empty();
-    $.each(pedido.lineas, function(i, item) {
-        var tr = $('<tr>').append(
-            $('<td>').html("<button type='button' onclick='deleteLine(" + i + ")' class='btn btn-danger'><i class='fa fa-minus' ></i></button> " + item.producto.nombre)
-        );
-        $(tr).append($('<td>').html(item.cantidad));
-        $(tr).append($('<td>').html(item.precio));
-        $(tr).append($('<td>').html(item.total));
-        $("#productosAgregados tbody").append(tr);
+    $.each(pedido.lineas, function (i, item) {
+        if (item.esRegalo) {
+            var tr = $('<tr>').append(
+                    $('<td>').html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|_ <i class='fas fa-gift'></i> " + item.producto.nombre)
+                    );
+            $(tr).append($('<td>').html(item.cantidad));
+            $(tr).append($('<td>').html(item.precio));
+            $(tr).append($('<td>').html(item.total));
+            $("#productosAgregados tbody").append(tr);
+        } else {
+            var tr = $('<tr>').append(
+                    $('<td>').html("<button type='button' onclick='deleteLine(" + i + ")' class='btn btn-danger'><i class='fa fa-minus' ></i></button> " + item.producto.nombre)
+                    );
+            $(tr).append($('<td>').html(item.cantidad));
+            $(tr).append($('<td>').html(item.precio));
+            $(tr).append($('<td>').html(item.total));
+            $("#productosAgregados tbody").append(tr);
+        }
+
     });
 
 }
 
 function deleteLine(pos) {
-    if (confirm("Desea eliminar esta linea")) {
-        pedido.lineas.splice(pos, 1);
+    var msg="";
+    if(pedido.lineas[pos].tieneHijos){
+        msg=". Esta linea contiene promociones, estas tambien se eliminarán";
+    }
+    if (confirm("Desea eliminar esta linea"+msg)) {
+        pedido.lineas.splice(pos, 1+pedido.lineas[pos].cantidadHijos);
         actualizarPedido();
     }
 }
@@ -225,7 +303,7 @@ function getClienteActual() {
     var cliente = null;
     var clientes = JSON.parse(getLS("Clientes"));
 
-    $.each(clientes, function(i, item) {
+    $.each(clientes, function (i, item) {
         if (item.codigo == codigoCliente) {
             cliente = item;
         }
@@ -240,13 +318,14 @@ function clearSearchProd() {
 }
 
 function listarProductos() {
-    $.each(productos, function(i, item) {
-        if (item.hijos > 0) {
-            $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item  list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + ' <i class="fas fa-list"></i></a>');
-        } else {
-            $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + '</a>');
+    $.each(productos, function (i, item) {
+        if (item.esHijo == 0) {
+            if (item.hijos > 0) {
+                $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item  list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + ' <i class="fas fa-list"></i></a>');
+            } else {
+                $("#listadoProductos").append('<a href="#" onclick="setProducto(' + i + ')" class="list-group-item list-group-item-action item-productos" >' + item.codigo + ' - ' + item.nombre + '</a>');
+            }
         }
-
     });
 }
 
@@ -261,7 +340,7 @@ function setProducto(pos) {
     precioMasBajo = 100000000;
     //Ahora lleno el uom
     $("#uom").empty();
-    $.each(producto.uom, function(i, item) {
+    $.each(producto.uom, function (i, item) {
         $("#uom").append("<option value='" + i + "'>" + item.nombre + "</option>");
     });
     updatePrecio();
@@ -270,13 +349,15 @@ function setProducto(pos) {
 
         var prods = getProductosHijos(producto);
         $("#productosHijos tbody").empty();
-        $.each(prods, function(i, item) {
+        $.each(prods, function (i, item) {
             var tr = $('<tr>').append(
-                $('<td>').html(item.nombre)
-            );
-            var select = '<select class="form-control" id="uom" corr="' + i + '">';
-            $.each(item.uom, function(j, uom) {
-                select += "<option value='" + j + "'>" + uom.nombre + "</option>";
+                    $('<td>').html(item.nombre)
+                    );
+            var select = '<select class="form-control uomHijo"  corr="' + i + '">';
+            $.each(item.uom, function (j, uom) {
+                if(uom.uom==item.codi_medi){
+                    select += "<option value='" + j + "'>" + uom.nombre + "</option>";
+                }
             });
             select += "</select>"
             $(tr).append($('<td>').html(select));
@@ -294,9 +375,10 @@ function setProducto(pos) {
 
 function getProductosHijos(producto) {
     var prods = [];
-    $.each(producto.surtido, function(i, item) {
+    $.each(producto.surtido, function (i, item) {
         var p = getProducto(item.codigoProducto);
         if (p != null) {
+            p.codi_medi=item.uom;
             prods.push(p);
         }
     });
@@ -334,7 +416,7 @@ function updatePrecio() {
 
     //Coloco primero los precios al detalle
     $("#preciosDisponibles").append('<h6 class="dropdown-header">Detalle</h6>');
-    $.each(producto.uom[uom].preciosTienda, function(i, item) {
+    $.each(producto.uom[uom].preciosTienda, function (i, item) {
 
         if (parseFloat(cnt) > parseFloat(item.desde) && parseFloat(cnt) < parseFloat(item.hasta)) {
             if (parseFloat(item.precio) < precioMasBajo) {
@@ -348,7 +430,7 @@ function updatePrecio() {
 
 
     $("#preciosDisponibles").append('<div class="dropdown-divider"></div><h6 class="dropdown-header">Mayoreo</h6>');
-    $.each(producto.uom[uom].precios, function(i, item) {
+    $.each(producto.uom[uom].precios, function (i, item) {
         if (parseFloat(cnt) > parseFloat(item.desde) && parseFloat(cnt) < parseFloat(item.hasta)) {
             if (parseFloat(item.precio) < precioMasBajo) {
                 precioMasBajo = parseFloat(item.precio);
