@@ -119,7 +119,7 @@ function getFecha(){
 }
 
 function round(num){
-    return Math.round(num * 100) / 100;
+    return Math.round(num * 100000) / 100000;
 }
 
 function verificarGPS(lat,long){
@@ -137,7 +137,7 @@ function verificarGPS(lat,long){
 
 function areWeNear(cliente,km){
     var ky = 40000 / 360;
-    var kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+    var kx = Math.cos(Math.PI * cliente.LATITUD / 180.0) * ky;
     var dx = Math.abs(APP.longitud - cliente.LONGITUD) * kx;
     var dy = Math.abs(APP.latitud - cliente.LATITUD) * ky;
     return Math.sqrt(dx * dx + dy * dy) <= km;
