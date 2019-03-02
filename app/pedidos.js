@@ -115,17 +115,25 @@ $(document).ready(function () {
             var idLineaPadre = pedido.lineas.length - 1;
             var hijos = false;
             var cntHijos=0;
-            if (producto.uom[iUom].promos.length > 0) {
+            if (producto.promos.length > 0) {
                 //Tiene promociones ahora veamos si logra llegar al minimo requerido
-                $.each(producto.uom[$("#uom").val()].promos, function (i, item) {
-                    if (item.cnt_requerida <= linea.cantidad) {
+                
+                $.each(producto.promos, function (i, item) {
+                    var codi_medi_ori=producto.uom[$("#uom").val()].uom;
+                    var codi_medi_dest=item.UOM_REQ;
+                    var fact_conv=obtenerFactorConversion(producto,codi_medi_ori,codi_medi_dest);
+                    //Calculos para saber si se ha llegado al minimo requerido
+                    var cntLinea=linea.cantidad*producto.uom[$("#uom").val()].cnt;
+                    var uomReq=obtenerUomProd(producto,item.UOM_REQ);
+                    var cntReq=item.cnt_requerida*uomReq.cnt;
+                    if (cntReq <= cntLinea) {
                         //Se puede agregar el producto pues cumplio el detalle
                         var lineaProm = {};
 
                         var prodPromo = getProducto(item.ARTICULO);
                         lineaProm.producto = prodPromo;
                         
-                        var cnt=(Math.floor(linea.cantidad/item.cnt_requerida)*item.cnt_regalo);
+                        var cnt=(Math.floor(cntLinea/cntReq)*item.cnt_regalo);
                         lineaProm.cantidad = parseFloat(cnt);
                         var uom = 0;
                         for (var i = 0; i < prodPromo.uom.length; i++) {
@@ -133,6 +141,10 @@ $(document).ready(function () {
                                 uom = i;
                             }
                         }
+                        /*
+                        if(fact_conv>1){
+                            lineaProm.cantidad=lineaProm.cantidad*fact_conv;
+                        }*/
                         lineaProm.uom = prodPromo.uom[uom];
                         lineaProm.observacion = $("#observacionLinea").val();
                         lineaProm.esRegalo = true;
@@ -295,6 +307,31 @@ function validarLinea() {
             return false;
         }
     }
+    //Comienza validacion de productos del tipo surtido
+    
+    if (producto.hijos > 0) {
+        var cnt_must_have=producto.uom[$("#uom").val()].cnt* parseFloat($("#cantidad").val());
+        var cnt_current=0;
+        $(".cnt_surtido").each(function(i,item){
+            if($(item).val()!=''){
+                var pos=$(item).attr("corr");
+                var cnt=parseFloat($(item).val());
+                var pHijo=getProducto(producto.surtido[pos].codigoProducto);
+                //Este es el i del uom del producto hijo con corr pos.
+                var iUomHijo=$(".uomHijo[corr='"+pos+"']").val();
+                if(pHijo.uom[iUomHijo].cnt>1){
+                    //Solo lo tengo que multiplicar en el caso que no sea unidad
+                    cnt=cnt*pHijo.uom[iUomHijo].cnt;
+                }
+                cnt_current+=cnt;
+            }
+        });
+        if(cnt_must_have!=cnt_current){
+            alerta("Las cantidades ingresadas en el surtido, no equivalen a la unidad de medida y cantidad seleccionada en el producto. Se necesitan: "+cnt_must_have+" unidades del producto. Actualmente posee: "+cnt_current);
+            return false;
+        }
+        
+    }
     return true;
 }
 
@@ -447,4 +484,52 @@ function setPrecio(tipo, i, precio) {
     $("#tipoPrecio").val(tipo);
     $("#idPrecio").val(i);
     $("#precio").val(precio);
+}
+
+
+function obtenerFactorConversion(producto, codi_medi_ori, codi_medi_dest){
+    if(codi_medi_ori==codi_medi_dest){
+        return 1;
+    }
+    var uom_ori=null;
+    var uom_dest=null;
+    
+    $.each(producto.uom,function(i,item){
+        if(item.uom==codi_medi_ori){
+            uom_ori=item;
+        }
+        if(item.uom==codi_medi_dest){
+            uom_dest=item;
+        }
+    });
+    if(uom_ori!=null && uom_dest!=null){
+        if(uom_dest.cnt==1){
+            return uom_ori.cnt;
+        }else{
+            //En realidad solo habria que hacer esto.
+            return uom_ori.cnt/uom_dest.cnt;
+        }
+    }else{
+        return 1;
+    }
+}
+
+function obtenerUomProd(producto,codi_medi){
+    var ret=null;
+    $.each(producto.uom,function(i,item){
+        if(item.uom==codi_medi){
+            ret=item;
+        }
+    });
+    return ret;
+}
+
+function getLowestUomProd(producto){
+    var ret=null;
+    $.each(producto.uom,function(i,item){
+        if(item.cnt==1){
+            ret=item;
+        }
+    });
+    return ret;
 }
