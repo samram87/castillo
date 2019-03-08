@@ -1,42 +1,46 @@
-var estado={};
+var estado = {};
+var cntClientesPedido = 0;
+var cntClientesNoVenta = 0;
+var ventasDetalle = 0;
+var ventasMayoreo = 0;
 
 $(document).ready(function () {
-    estado=JSON.parse(getLS("estado"));
+    estado = JSON.parse(getLS("estado"));
     var clientesPendientes = getClientesPendientes();
     crearTablaPendientes(clientesPendientes);
     generarGrafico();
     crearTablaPedidos();
     toDataTable("#clientesPendientes");
     toDataTable("#tablaPedidos");
-    $("#sincronizar").click(function(){
-        if(estado.abierto){
+    $("#sincronizar").click(function () {
+        if (estado.abierto) {
             sincronizarPedidos();
         }
     });
-    $("#cerrarDia").click(function(){
-        if(estado.cerrado){
+    $("#cerrarDia").click(function () {
+        if (estado.cerrado) {
             cerrado();
-        }else{
-            if(confirm("Esta a punto de cerar el dia. Ya no podra agregar mas pedidos ni registrar No Ventas. ¿Desea Continuar?")){
+        } else {
+            if (confirm("Esta a punto de cerar el dia. Ya no podra agregar mas pedidos ni registrar No Ventas. ¿Desea Continuar?")) {
                 alerta("Sincronizando Pedidos Pendientes y Recargando");
-                estado.abierto=false;
-                estado.cerrado=true;
-                setLS("estado",JSON.stringify(estado));
+                estado.abierto = false;
+                estado.cerrado = true;
+                setLS("estado", JSON.stringify(estado));
                 doSincronize();
                 var texto = $.ajax({
-                type: "POST",
-                url: APP.url+"dal/cerrarDia.php",
-                data: {idUsuario: getIdUsuario()},
-                async: false}).responseText;
+                    type: "POST",
+                    url: APP.url + "dal/cerrarDia.php",
+                    data: {idUsuario: getIdUsuario(),pedidos:cntClientesPedido,noventas:cntClientesNoVenta,totaldetalle:ventasDetalle,totalmayoreo:ventasMayoreo},
+                    async: false}).responseText;
                 window.location.reload();
             }
         }
     });
-    if(estado.cerrado){
+    if (estado.cerrado) {
         $("#cerrarDia").removeClass("btn-primary");
         $("#sincronizar").removeClass("btn-success");
     }
-    
+
 });
 
 function activeTab(pos) {
@@ -74,25 +78,25 @@ function getClientesPendientes() {
 
 function crearTablaPendientes(clientesPendientes) {
     $.each(clientesPendientes, function (i, item) {
-        
+
         var tr = $('<tr>').append(
                 $('<td>').html("<strong>" + item.cliente + "</strong>")
                 );
-        if(estado.abierto){
+        if (estado.abierto) {
             $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.codigoCliente + '\')"><i class="fas fa-fw fa-cart-plus"></i> Pedido</button>'));
             $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="noVenta(\'' + item.codigoCliente + '\')" ><i class="fas fa-fw fa-ban"></i> No Venta</button>'));
-        }else{
+        } else {
             $(tr).append($('<td>').html('<button class="btn " onclick="cerrado(\'\')"><i class="fas fa-fw fa-cart-plus"></i> Pedido</button>'));
             $(tr).append($('<td>').html('<button class="btn " onclick="cerrado(\'\')" ><i class="fas fa-fw fa-ban"></i> No Venta</button>'));
         }
-        
+
 
         $("#clientesPendientes tbody").append(tr);
 
     });
 }
 
-function cerrado(){
+function cerrado() {
     alerta("El dia ha sido cerrado, ud no puede agregar mas pedidos ni registrar no ventas");
 }
 
@@ -126,30 +130,32 @@ function crearTablaPedidos() {
 function sincronizarPedidos() {
     if (confirm("Esta Seguro que desea sincronizar los pedidos. Ya no podra editarlos.")) {
         doSincronize();
-                
+
         alerta("Pedidos Sincronizados");
-        setTimeout(function(){goto("dashboard.html");},1000);
+        setTimeout(function () {
+            goto("dashboard.html");
+        }, 1000);
     }
 }
 
-function doSincronize(){
-     var pedidos = JSON.parse(getLS("pedidos"));
-        $.each(pedidos, function (i, item) {
-            if(item.status!="online"){
-                var texto = $.ajax({
+function doSincronize() {
+    var pedidos = JSON.parse(getLS("pedidos"));
+    $.each(pedidos, function (i, item) {
+        if (item.status != "online") {
+            var texto = $.ajax({
                 type: "POST",
-                url: APP.url+"dal/sincronizar.php",
+                url: APP.url + "dal/sincronizar.php",
                 data: {pedido: JSON.stringify(item), idUsuario: getIdUsuario()},
                 async: false}).responseText;
-                if(texto=="SUCCESS"){
-                    item.status="online";
-                }else{
-                    console.log(texto);
-                    alerta(texto);
-                }
+            if (texto == "SUCCESS") {
+                item.status = "online";
+            } else {
+                console.log(texto);
+                alerta(texto);
             }
-        });
-        setLS("pedidos", JSON.stringify(pedidos));
+        }
+    });
+    setLS("pedidos", JSON.stringify(pedidos));
 }
 
 
@@ -188,23 +194,20 @@ function deletePedido(pos) {
 
 function generarGrafico() {
     var clientesDia = JSON.parse(getLS("Rutas"));
-    var cntClientesPedido = 0;
-    var cntClientesNoVenta = 0;
-    var ventasDetalle=0;
-    var ventasMayoreo=0;
+
     var clientesPendientes = clientesDia.length;
     var clientesVisitados = JSON.parse(getLS("clientesVisitados"));
 
     if (clientesVisitados.length > 0) {
-        
+
         for (var i = 0; i < clientesVisitados.length; i++) {
             var cv = clientesVisitados[i];
             if (cv.tipo == "PEDIDO") {
                 cntClientesPedido++;
-                if(cv.tipoCliente=="D"){
-                    ventasDetalle+=cv.total;
-                }else{
-                    ventasMayoreo+=cv.total;
+                if (cv.tipoCliente == "D") {
+                    ventasDetalle += cv.total;
+                } else {
+                    ventasMayoreo += cv.total;
                 }
             } else {
                 cntClientesNoVenta++;
@@ -212,15 +215,15 @@ function generarGrafico() {
         }
         clientesPendientes = clientesPendientes - cntClientesPedido - cntClientesNoVenta;
     }
-    var totalVentas=ventasDetalle+ventasMayoreo;
-    
+    var totalVentas = ventasDetalle + ventasMayoreo;
+
     $("#clientesVisitados").html(clientesVisitados.length);
     $("#pedidosRealizados").html(cntClientesPedido);
     $("#noVentas").html(cntClientesNoVenta);
     $("#ventasDetalle").html(ventasDetalle);
     $("#ventasMayoreo").html(ventasMayoreo);
     $("#totalVentas").html(totalVentas);
-        
+
     Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
     Chart.defaults.global.defaultFontColor = '#292b2c';
 
