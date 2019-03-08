@@ -562,6 +562,7 @@ function onBackKeyDown(e) {
         modalShowed = false;
         e.preventDefault();
         return false;
+    }else{
+        throw new Error('Exit');
     }
-    return true;
 }
