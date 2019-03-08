@@ -62,7 +62,7 @@ function filtrarListado(idInput,claseListado){
                 }
             });
         }else{
-            $("."+claseListado).css("display","block");
+            $("."+claseListado).css("display","none");
         }
 }
 

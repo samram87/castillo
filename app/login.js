@@ -43,6 +43,10 @@ function sincronizarDatos(){
                 setLS("Rutas",data);
                 $("#modalLoadingText").html("Modelo Cargado...");
                     setTimeout(function() {
+                        var estado={};
+                        estado.abierto=true;
+                        estado.cerrado=false;
+                        setLS("estado",JSON.stringify(estado));
                         setLS("pedidos",JSON.stringify([]));
                         setLS("clientesVisitados",JSON.stringify([]));
                         setLS("fechaActualizacion",fecha);
