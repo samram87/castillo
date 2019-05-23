@@ -4,7 +4,7 @@ var cntClientesNoVenta = 0;
 var ventasDetalle = 0;
 var ventasMayoreo = 0;
 
-$(document).ready(function () {
+$(document).ready(function() {
     estado = JSON.parse(getLS("estado"));
     var clientesPendientes = getClientesPendientes();
     crearTablaPendientes(clientesPendientes);
@@ -12,12 +12,16 @@ $(document).ready(function () {
     crearTablaPedidos();
     toDataTable("#clientesPendientes");
     toDataTable("#tablaPedidos");
-    $("#sincronizar").click(function () {
+    $("#listaPrecios").click(function() {
+        goto("listaprecios.html");
+    });
+
+    $("#sincronizar").click(function() {
         if (estado.abierto) {
             sincronizarPedidos();
         }
     });
-    $("#cerrarDia").click(function () {
+    $("#cerrarDia").click(function() {
         if (estado.cerrado) {
             cerrado();
         } else {
@@ -30,8 +34,9 @@ $(document).ready(function () {
                 var texto = $.ajax({
                     type: "POST",
                     url: APP.url + "dal/cerrarDia.php",
-                    data: {idUsuario: getIdUsuario(),pedidos:cntClientesPedido,noventas:cntClientesNoVenta,totaldetalle:ventasDetalle,totalmayoreo:ventasMayoreo},
-                    async: false}).responseText;
+                    data: { idUsuario: getIdUsuario(), pedidos: cntClientesPedido, noventas: cntClientesNoVenta, totaldetalle: ventasDetalle, totalmayoreo: ventasMayoreo },
+                    async: false
+                }).responseText;
                 window.location.reload();
             }
         }
@@ -77,11 +82,12 @@ function getClientesPendientes() {
 }
 
 function crearTablaPendientes(clientesPendientes) {
-    $.each(clientesPendientes, function (i, item) {
+
+    $.each(clientesPendientes, function(i, item) {
 
         var tr = $('<tr>').append(
-                $('<td>').html("<strong>" + item.cliente + "</strong>")
-                );
+            $('<td>').html("<strong>" + item.cliente + "</strong>")
+        );
         if (estado.abierto) {
             $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.codigoCliente + '\')"><i class="fas fa-fw fa-cart-plus"></i> Pedido</button>'));
             $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="noVenta(\'' + item.codigoCliente + '\')" ><i class="fas fa-fw fa-ban"></i> No Venta</button>'));
@@ -102,10 +108,10 @@ function cerrado() {
 
 function crearTablaPedidos() {
     var pedidos = JSON.parse(getLS("pedidos"));
-    $.each(pedidos, function (i, item) {
+    $.each(pedidos, function(i, item) {
         var tr = $('<tr>').append(
-                $('<td>').html("<strong>" + item.cliente.nombre + "</strong>")
-                );
+            $('<td>').html("<strong>" + item.cliente.nombre + "</strong>")
+        );
         if (item.status == "LOCAL") {
             if (item.tipo == "PEDIDO") {
                 $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.cliente.codigo + '\')"><i class="fas fa-fw fa-cart-plus"></i> Ver</button>'));
@@ -132,7 +138,7 @@ function sincronizarPedidos() {
         doSincronize();
 
         alerta("Pedidos Sincronizados");
-        setTimeout(function () {
+        setTimeout(function() {
             goto("dashboard.html");
         }, 1000);
     }
@@ -140,13 +146,14 @@ function sincronizarPedidos() {
 
 function doSincronize() {
     var pedidos = JSON.parse(getLS("pedidos"));
-    $.each(pedidos, function (i, item) {
+    $.each(pedidos, function(i, item) {
         if (item.status != "online") {
             var texto = $.ajax({
                 type: "POST",
                 url: APP.url + "dal/sincronizar.php",
-                data: {pedido: JSON.stringify(item), idUsuario: getIdUsuario()},
-                async: false}).responseText;
+                data: { pedido: JSON.stringify(item), idUsuario: getIdUsuario() },
+                async: false
+            }).responseText;
             if (texto == "SUCCESS") {
                 item.status = "online";
             } else {
@@ -163,6 +170,7 @@ function nuevoPedido(codigoCliente) {
     setLS("cliente", codigoCliente);
     goto("pedidos.html");
 }
+
 function noVenta(codigoCliente) {
     setLS("cliente", codigoCliente);
     goto("noventa.html");
@@ -233,11 +241,10 @@ function generarGrafico() {
         data: {
             labels: ["Pendientes", "Pedidos", "No Venta"],
             datasets: [{
-                    data: [clientesPendientes, cntClientesPedido, cntClientesNoVenta],
-                    backgroundColor: ['#007bff', '#28a745', '#dc3545'],
-                }],
+                data: [clientesPendientes, cntClientesPedido, cntClientesNoVenta],
+                backgroundColor: ['#007bff', '#28a745', '#dc3545'],
+            }],
         },
     });
 
 }
-

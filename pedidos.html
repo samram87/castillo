@@ -1,289 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>Dashboard</title>
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-        <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-        <link href="css/sb-admin.css" rel="stylesheet">
-    </head>
-    <body id="page-top" onload="onLoad()">
-        <style>
-            #modalProductos{
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            .productosContent{
-                height: auto;
-                min-height: 100%;
-                border-radius: 0;
-            }
-        </style>
-        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-            <a class="navbar-brand mr-1" href="dashboard.html">Castillo</a>
-            <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Dashboard</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body id="page-top" onload="onLoad()">
+    <style>
+        #modalProductos {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .productosContent {
+            height: auto;
+            min-height: 100%;
+            border-radius: 0;
+        }
+    </style>
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+        <a class="navbar-brand mr-1" href="dashboard.html">Castillo</a>
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
                 <i class="fas fa-bars"></i>
             </button>
-            <!-- Navbar Search -->
-            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
 
-            </form>
-            <!-- Navbar -->
-            <ul class="navbar-nav ml-auto ml-md-0">
+        </form>
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
 
-                <li class="nav-item dropdown no-arrow">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user-circle fa-fw"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-        <div id="wrapper">
-            <!--
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="wrapper">
+        <!--
           MENU
-            -->  
+            -->
 
-            <div id="content-wrapper">
+        <div id="content-wrapper">
 
-                <div class="container-fluid">
+            <div class="container-fluid">
 
 
-                    <!-- Breadcrumbs-->
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="dashboard.html">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item active">Pedidos</li>
-                    </ol>
+                <!-- Breadcrumbs-->
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Pedidos</li>
+                </ol>
 
-                    <form>
-                        <div class="form-group">
-                            <div class="alert alert-success" role="alert" style="display: none" id="alertaGPS">
-                                <strong>¡Atención!</strong> El cliente no posee registro de GPS,
-                                las coordenadas actuales serán almacenadas como su posición geográfica. 
-                                Por favor verifique que este guardando el pedido en la ubicacion correcta.
-                            </div>
-                            <label for="cliente">Cliente</label>
-                            <input type="text" disabled="disabled" class="form-control" id="cliente">
-                            <div style="padding-left: 15px; font-weight: bold" id="nombreComercial"></div>
+                <form>
+                    <div class="form-group">
+                        <div class="alert alert-success" role="alert" style="display: none" id="alertaGPS">
+                            <strong>¡Atención!</strong> El cliente no posee registro de GPS, las coordenadas actuales serán almacenadas como su posición geográfica. Por favor verifique que este guardando el pedido en la ubicacion correcta.
                         </div>
-                        <div class="form-group">
-                            <label for="productos">Producto</label>
-                            <select class="form-control" id="productos">
+                        <label for="cliente">Cliente</label>
+                        <input type="text" disabled="disabled" class="form-control" id="cliente">
+                        <div style="padding-left: 15px; font-weight: bold" id="nombreComercial"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productos">Producto</label>
+                        <select class="form-control" id="productos">
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="uom">UOM</label>
-                            <select class="form-control" id="uom">
+                    </div>
+                    <div class="form-group">
+                        <label for="uom">UOM</label>
+                        <select class="form-control" id="uom">
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cantidad">Cantidad</label>
-                            <input type="number" class="form-control" id="cantidad">
-                        </div>
-                        <div class="form-group">
-                            <label for="precio">Precio Unitario</label>
-                            <div class="input-group mb-3">
-                                <input type="number" class="form-control" id="precio" placeholder="Precio Unitario"  aria-describedby="button-precio">
-                                <div class="input-group-append">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="button-precio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidad">
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio Unitario</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" id="precio" placeholder="Precio Unitario" aria-describedby="button-precio">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="button-precio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Precios Disponibles
                                     </button>
-                                    <div class="dropdown-menu" id="preciosDisponibles" aria-labelledby="button-precio">
-                                        <h6 class="dropdown-header">Seleccione un producto</h6>
-                                    </div>
+                                <div class="dropdown-menu" id="preciosDisponibles" aria-labelledby="button-precio">
+                                    <h6 class="dropdown-header">Seleccione un producto</h6>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group" style="display:none">
-                            <label for="observacion">Observacion Linea</label>
-                            <textarea class="form-control" id="observacionLinea" rows="2"></textarea>
-                        </div>
-                        <div class="table-responsive" id="divProductosHijos" style="display:none" >
-                            <table class="table table-bordered" id="productosHijos" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Uom</th>
-                                        <th>Cnt</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                    </div>
+                    <div class="form-group" style="display:none">
+                        <label for="observacion">Observacion Linea</label>
+                        <textarea class="form-control" id="observacionLinea" rows="2"></textarea>
+                    </div>
+                    <div class="table-responsive" id="divProductosHijos" style="display:none">
+                        <table class="table table-bordered" id="productosHijos" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Uom</th>
+                                    <th>Cnt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- HIDDEN -->
-                        <input type="hidden" id="tipoPrecio">
-                        <input type="hidden" id="idPrecio">
-                        <input type="hidden" id="idLinea" value="">
-                        <div class="form-group row">
-                            <div class="col-sm-10">
-                                <strong>TOTAL: 
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- HIDDEN -->
+                    <input type="hidden" id="tipoPrecio">
+                    <input type="hidden" id="idPrecio">
+                    <input type="hidden" id="idLinea" value="">
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <strong>TOTAL: 
                                 <span id="subtotalPrevio"></span>
                                 </strong>
-                            </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-sm-10">
-                                
-                                <button type="button" class="btn btn-primary" id="addLinea"><i class="fas fa-plus"></i> Agregar Linea</button>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+
+                            <button type="button" class="btn btn-primary" id="addLinea"><i class="fas fa-plus"></i> Agregar Linea</button>
                         </div>
-                        <!--
+                    </div>
+                    <!--
                         Listado Productos
                         -->
 
-                        <div class="table-responsive" >
-                            <table class="table table-bordered" id="productosAgregados" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Cnt</th>
-                                        <th>Precio</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th id="totalProductos">0 Items</th>
-                                        <th id="totalCantidad">0</th>
-                                        <th colspan="2" id="totalPedido">Total: 0.00</th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="productosAgregados" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cnt</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th id="totalProductos">0 Items</th>
+                                    <th id="totalCantidad">0</th>
+                                    <th colspan="2" id="totalPedido">Total: 0.00</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="observacion">Observacion del Pedido</label>
-                            <textarea class="form-control" id="observacion" rows="3"></textarea>
+                    <div class="form-group">
+                        <label for="observacion">Observacion del Pedido</label>
+                        <textarea class="form-control" id="observacion" rows="3"></textarea>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-success" id="addPedido"><i class="fas fa-save"></i> Guardar Pedido</button>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-sm-10">
-                                <button type="button" class="btn btn-success" id="addPedido"><i class="fas fa-save"></i> Guardar Pedido</button>
+                    </div>
+                </form>
+
+
+            </div>
+            <!-- /.container-fluid -->
+
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Todos los Derechos Reservados © Distribuidora Castillo - 2019</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Salir de la Aplicación</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                </div>
+                <div class="modal-body">Haga click en Cerrar Sesión si desea salir del sistema. Para volver a entrar debera recargar todos los modelos con conexión activa a internet.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Comercial Castillo</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                </div>
+                <div class="modal-body" id="modalInfoText"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content productosContent">
+                <div class="modal-body">
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="search" id="buscadorProductos" class="form-control search" placeholder="Buscar Productos.." aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <span class="input-group-text" onclick="clearSearchProd()" id="basic-addon2">X</span>
                             </div>
                         </div>
                     </form>
+                    <div class="list-group" id="listadoProductos">
 
-
-                </div>
-                <!-- /.container-fluid -->
-
-                <!-- Sticky Footer -->
-                <footer class="sticky-footer">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Todos los Derechos Reservados © Distribuidora Castillo - 2019</span>
-                        </div>
-                    </div>
-                </footer>
-
-            </div>
-            <!-- /.content-wrapper -->
-
-        </div>
-        <!-- /#wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Salir de la Aplicación</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Haga click en Cerrar Sesión si desea salir del sistema. Para volver a entrar debera recargar todos los modelos con conexión activa a internet.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-primary" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 
-        <!-- MODAL -->
-        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Comercial Castillo</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="modalInfoText"></div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-                <div class="modal-content productosContent">
-                    <div class="modal-body" >
-                        <form>
-                            <div class="input-group mb-3">
-                                <input type="search" id="buscadorProductos" class="form-control search" placeholder="Buscar Productos.." aria-describedby="basic-addon2">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" onclick="clearSearchProd()" id="basic-addon2">X</span>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="list-group" id="listadoProductos">
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    
-        <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
 
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Archivo Util -->
+    <script src="app/utils.js"></script>
+    <!-- Archivo Control -->
+    <script src="app/control.js"></script>
 
-        <!-- Page level plugin JavaScript-->
-        <script src="vendor/chart.js/Chart.min.js"></script>
-        <script src="vendor/datatables/jquery.dataTables.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin.min.js"></script>
-
-        <!-- Archivo Util -->
-        <script src="app/utils.js"></script>
-        <!-- Archivo Control -->
-        <script src="app/control.js"></script>
-
-        <!-- Archivo Dashboard -->
-        <script src="app/pedidos.js"></script>
-    </body>
+    <!-- Archivo Dashboard -->
+    <script src="app/pedidos.js"></script>
+</body>
 
 </html>
