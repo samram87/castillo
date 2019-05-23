@@ -62,37 +62,6 @@ function getProductos(filter) {
     return productos;
 }
 
-/*
-"uom": [
-{
-"codigo": "2222",
-"uom": "001",
-"nombre": "UNIDAD",
-"cnt": "1.00",
-"precios": [
-{
-"codigo": "2-8966",
-"desde": "0.01",
-"hasta": "1000.01",
-"precio": "100.00000",
-"precioMinimo": "100.00000",
-"tipo": "M"
-}
-],
-"preciosTienda": [
-{
-"codigo": "2-8966",
-"desde": "0.01",
-"hasta": "1000.01",
-"precio": "100.00000",
-"precioMinimo": "100.00000",
-"tipo": "M"
-}
-]
-}
-],
-*/
-
 function mostrarListaPrecios(codigo) {
     var prod = getProducto(codigo);
     $("#productName").html(prod.codigo + " / " + prod.nombre);
@@ -116,8 +85,9 @@ function mostrarListaPrecios(codigo) {
             $("#listaPreciosMayoreo tbody").append(tr);
         });
     });
-    $("#modalPrecios").modal('show');
     modalShowed = true;
+    $("#modalPrecios").modal('show');
+    
 }
 
 
@@ -143,7 +113,7 @@ function onDeviceReady() {
 
 function onBackKeyDown(e) {
     if (modalShowed) {
-        $("#modalProductos").modal('hide');
+        $("#modalPrecios").modal('hide');
         modalShowed = false;
         e.preventDefault();
         return false;
