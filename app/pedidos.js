@@ -177,7 +177,7 @@ $(document).ready(function () {
         var pedidos = JSON.parse(getLS("pedidos"));
         if (pedidoExistente(cliente)) {
             var i = getPosicionPedido(cliente);
-            pedidos.splice(i - 1, 1, pedido);
+            pedidos[i]=pedido;
         } else {
             pedidos.push(pedido);
             var cvs = JSON.parse(getLS("clientesVisitados"));
@@ -222,12 +222,14 @@ function getPedido(clienteActual) {
 
 function getPosicionPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
-    $.each(pedidos, function (i, item) {
-        if (clienteActual.codigo == item.cliente.codigo) {
-            return i;
+    var x=-1;
+    for(var i=0; i<pedidos.length;i++) {
+        var item=pedidos[i];
+        if (clienteActual.codigo === item.cliente.codigo) {
+            x= i;
         }
-    });
-    return -1;
+    }
+    return x;
 }
 
 function limpiarLinea() {
