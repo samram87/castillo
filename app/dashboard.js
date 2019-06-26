@@ -86,7 +86,7 @@ function crearTablaPendientes(clientesPendientes) {
     $.each(clientesPendientes, function(i, item) {
 
         var tr = $('<tr>').append(
-            $('<td>').html("<strong>" + item.cliente + "</strong>")
+            $('<td>').html("<strong>"+item.codigoCliente + " - " + item.cliente + "<br><span style='size:0.8em;color:gray'>"+ item.nombreComercial+"</span></strong>")
         );
         if (estado.abierto) {
             $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.codigoCliente + '\')"><i class="fas fa-fw fa-cart-plus"></i> Pedido</button>'));
