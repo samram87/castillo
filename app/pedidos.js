@@ -390,6 +390,7 @@ function setProducto(pos) {
         $("#uom").append("<option value='" + i + "'>" + item.nombre + "</option>");
     });
     updatePrecio();
+    //Añadiendo validacion para surtidos preelaborados
     if (producto.hijos > 0) {
         console.log("producto tiene hijos");
 
