@@ -135,32 +135,51 @@ function crearTablaPedidos() {
 
 function sincronizarPedidos() {
     if (confirm("Esta Seguro que desea sincronizar los pedidos. Ya no podra editarlos.")) {
-        doSincronize();
+        doSincronize(function(){
+            alerta("Pedidos Sincronizados");
+            setTimeout(function() {
+                goto("dashboard.html");
+            }, 1000);
+        },function(){
+            setTimeout(function() {
+                alerta("No pudieron ser sincronizadas las transacciones por favor intente en un lugar con mejor señal de internet");
+                goto("dashboard.html");
+            }, 3000);
+        });
 
-        alerta("Pedidos Sincronizados");
-        setTimeout(function() {
-            goto("dashboard.html");
-        }, 1000);
+        
     }
 }
 
-function doSincronize() {
+function doSincronize(callback,failCallback) {
     var pedidos = JSON.parse(getLS("pedidos"));
-    $.each(pedidos, function(i, item) {
+    var pedToSend=[];
+    for(var i=0;i<pedidos.length;i++){
+        var item=pedidos[i];
         if (item.status != "online") {
-            var texto = $.ajax({
-                type: "POST",
-                url: APP.url + "dal/sincronizar.php",
-                data: { pedido: JSON.stringify(item), idUsuario: getIdUsuario() },
-                async: false
-            }).responseText;
-            if (texto == "SUCCESS") {
-                item.status = "online";
-            } else {
-                console.log(texto);
-                alerta(texto);
-            }
+            pedToSend.push(item);
         }
+    }
+    $.ajax({
+        type: "POST",
+        url: APP.url + "dal/sincronizar.php",
+        data: { pedidos: JSON.stringify(pedToSend), idUsuario: getIdUsuario() },
+        async: false,
+        success:function(data){
+            console.log(data);
+            if (data == pedToSend.length) {
+                for(var i=0;i<pedidos.length;i++){
+                    var item=pedidos[i];
+                    if (item.status != "online") {
+                        item.status = "online";
+                    }
+                }
+                callback();
+                             
+            } else {
+                failCallback();
+            }
+        },error:failCallback
     });
     setLS("pedidos", JSON.stringify(pedidos));
 }
