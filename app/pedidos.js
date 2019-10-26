@@ -171,29 +171,33 @@ $(document).ready(function () {
     });
 
     $("#addPedido").click(function () {
-        pedido.tipo = "PEDIDO";
-        pedido.status = "LOCAL";
-        pedido.observacion = $("#observacion").val();
-        var pedidos = JSON.parse(getLS("pedidos"));
-        if (pedidoExistente(cliente)) {
-            var i = getPosicionPedido(cliente);
-            pedidos[i]=pedido;
-        } else {
-            pedidos.push(pedido);
-            var cvs = JSON.parse(getLS("clientesVisitados"));
-            var cv = {};
-            cv.codigoCliente = cliente.codigo;
-            cv.tipo = "PEDIDO";
-            cv.total=pedido.total;
-            cv.tipoCliente=pedido.cliente.clase;
-            cvs.push(cv);
-            setLS("clientesVisitados", JSON.stringify(cvs));
+        if(pedido.lineas.length==0){
+            alerta("No ha ingresado productos al pedido.");
+        }else {
+            pedido.tipo = "PEDIDO";
+            pedido.status = "LOCAL";
+            pedido.observacion = $("#observacion").val();
+            var pedidos = JSON.parse(getLS("pedidos"));
+            if (pedidoExistente(cliente)) {
+                var i = getPosicionPedido(cliente);
+                pedidos[i]=pedido;
+            } else {
+                pedidos.push(pedido);
+                var cvs = JSON.parse(getLS("clientesVisitados"));
+                var cv = {};
+                cv.codigoCliente = cliente.codigo;
+                cv.tipo = "PEDIDO";
+                cv.total=pedido.total;
+                cv.tipoCliente=pedido.cliente.clase;
+                cvs.push(cv);
+                setLS("clientesVisitados", JSON.stringify(cvs));
+            }
+            setLS("pedidos", JSON.stringify(pedidos));
+            alerta("Pedido Guardado con exito");
+            setTimeout(function () {
+                goto("dashboard.html");
+            }, 2000);
         }
-        setLS("pedidos", JSON.stringify(pedidos));
-        alerta("Pedido Guardado con exito");
-        setTimeout(function () {
-            goto("dashboard.html");
-        }, 2000);
     });
 
 });
