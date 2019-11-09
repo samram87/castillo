@@ -15,6 +15,14 @@ $(document).ready(function() {
             buscarProducto(filter);
         }
     });
+    $("#refrescar").click(function() {
+       alerta("Actualizando Existencias y Precios...");
+        $.get(APP.url + "dal/getListaPrecios.php", function(data) {
+            setLS("Price", data);
+            lista = JSON.parse(getLS("Price"));
+            alerta("Actualizacion Exitosa");
+        });
+    });
 });
 
 
@@ -36,11 +44,15 @@ function buscarProducto(filter) {
             $('<td>').html("<strong>Codigo: </strong>" + item.Codigo + "<br>" +
                 "<strong>Producto: </strong>" + item.Producto + "<br>" +
                 "<strong>Marca: </strong>" + item.Marca + "<br>" +
-                "<strong>Proveedor: </strong>" + item.Proveedor + "<br>" +
                 "<strong>Existencias: </strong>" + toNumero(item.Existencias, 2) + "<br>" +
+                '<button class="btn btn-success" onclick="mostrarListaPrecios(\'' + item.Codigo + '\')"><i class="fas fa-fw fa-list"></i> Escala Precios</button>')
+            /*
+                "<strong>Proveedor: </strong>" + item.Proveedor + "<br>" +
                 "<strong>Precio " + item.UnidadMediMenor + ": </strong>" + toNumero(item.PrecioUnidad, 4) + "<br>" +
                 "<strong>Precio " + item.UnidadMediMayor + ": </strong>" + toNumero(item.PrecioMayoreo, 4) + "<br>" +
-                '<button class="btn btn-success" onclick="mostrarListaPrecios(\'' + item.Codigo + '\')"><i class="fas fa-fw fa-list"></i> Escala Precios</button>')
+            
+            */
+
         );
 
         $("#resultadoProductos tbody").append(tr);

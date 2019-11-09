@@ -1,292 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>Dashboard</title>
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-        <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-        <link href="css/sb-admin.css" rel="stylesheet">
-    </head>
-    <body id="page-top">
-        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-            <a class="navbar-brand mr-1" href="dashboard.html">Castillo</a>
-            <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-                <i class="fas fa-bars"></i>
-            </button>
-            <!-- Navbar Search -->
-            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Dashboard</title>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <link href="css/sb-admin.css" rel="stylesheet">
+</head>
 
-            </form>
-            <!-- Navbar -->
-            <ul class="navbar-nav ml-auto ml-md-0">
+<body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+        <a class="navbar-brand mr-1" href="dashboard.html">Castillo</a>
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
 
-                <li class="nav-item dropdown no-arrow">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user-circle fa-fw"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-        <div id="wrapper">
-            <!--
+        </form>
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="wrapper">
+        <!--
           MENU
-            -->  
+            -->
 
-            <div id="content-wrapper">
+        <div id="content-wrapper">
 
-                <div class="container-fluid">
+            <div class="container-fluid">
 
 
-                    <!-- Breadcrumbs-->
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item active">Panel de Control</li>
-                    </ol>
-                    
-                    <button type="button" class="btn btn-dark" style="margin-bottom: 1rem;" id="listaPrecios"><i class="fas fa-list-alt"></i> Precios y Existencias</button>
-                    
-                    <!-- DataTables Example -->
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link tab-sam active" onclick="activeTab(0)" id="tabClientes" href="#">Clientes Pendientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link tab-sam" id="tabPedidos" onclick="activeTab(1)" href="#">Pedidos</a>
-                        </li>
-                        <!--
+                <!-- Breadcrumbs-->
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Panel de Control</li>
+                </ol>
+
+                <button type="button" class="btn btn-dark" style="margin-bottom: 1rem;" id="listaPrecios"><i
+                        class="fas fa-list-alt"></i> Precios y Existencias</button>
+
+                <!-- DataTables Example -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link tab-sam active" onclick="activeTab(0)" id="tabClientes" href="#">Clientes
+                            Pendientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link tab-sam" id="tabPedidos" onclick="activeTab(1)" href="#">Pedidos</a>
+                    </li>
+                    <!--
                         <li class="nav-item">
                             <a class="nav-link" href="#">GPS</a>
                         </li>
                         -->
-                    </ul>
-                    <div class="table-responsive div-sam" id="divClientes" >
-                        <table class="table table-bordered" id="clientesPendientes" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Pedido</th>
-                                    <th>No Venta</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Pedido</th>
-                                    <th>No Venta</th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
+                </ul>
+                <div class="table-responsive div-sam" id="divClientes">
+                    <table class="table table-bordered" id="clientesPendientes" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Cliente</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
 
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table-responsive div-sam" id="divPedidos" style="display:none" >
-                        <button type="button" class="btn btn-success" id="sincronizar"><i class="fas fa-save"></i> Sincronizar con el Servidor</button>
-                        <table class="table table-bordered" id="tablaPedidos" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Ver</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Ver</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive div-sam" id="divPedidos" style="display:none">
+                    <button type="button" class="btn btn-success" id="sincronizar"><i class="fas fa-save"></i>
+                        Sincronizar con el Servidor</button>
+                    <table class="table table-bordered" id="tablaPedidos" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Ver</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Ver</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
 
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="table-responsive" id="divGPS" style="display:none" >
-                        <select class="selectpicker">
-                            <option value="1">Clientes a 1 Km</option>
-                            <option value="0.5">Clientes a 500m</option>
-                            <option value="0.25">Clientes a 250m</option>
-                        </select>
+                        </tbody>
+                    </table>
+                </div>
 
-                        <table class="table table-bordered" id="tablaGPS" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Pedido</th>
-                                    <th>No Venta</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Pedido</th>
-                                    <th>No Venta</th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
+                <div class="table-responsive" id="divGPS" style="display:none">
+                    <select class="selectpicker">
+                        <option value="1">Clientes a 1 Km</option>
+                        <option value="0.5">Clientes a 500m</option>
+                        <option value="0.25">Clientes a 250m</option>
+                    </select>
 
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-bordered" id="tablaGPS" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Pedido</th>
+                                <th>No Venta</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Pedido</th>
+                                <th>No Venta</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
 
-                    <!-- Area Chart Example-->
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="fas fa-clock"></i>
-                            Resumen del Día</div>
-                        <div class="card-body">
-                            <div class="col-sm-10">
-                                <strong>Clientes Visitados: 
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Area Chart Example-->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-clock"></i>
+                        Resumen del Día</div>
+                    <div class="card-body">
+                        <div class="col-sm-10" style="display:none">
+                            <strong>Clientes Visitados:
                                 <span id="clientesVisitados"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <div class="col-sm-10">
-                                <strong>Pedidos Realizados: 
-                                <span id="pedidosRealizados"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <div class="col-sm-10">
-                                <strong>No venta: 
-                                <span id="noVentas"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <HR/>
-                            <div class="col-sm-10">
-                                <strong>Ventas Detalle: 
-                                <span id="ventasDetalle"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <div class="col-sm-10">
-                                <strong>Ventas Mayoreo: 
-                                <span id="ventasMayoreo"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <div class="col-sm-10">
-                                <strong>Total de Ventas: 
-                                <span id="totalVentas"></span>
-                                </strong>
-                            </div>
-                            <br/>
-                            <div class="col-sm-10">
-                                <button type="button" class="btn btn-primary" id="cerrarDia"><i class="fas fa-lock"></i> Cerrar Dia</button>
-                            </div>
+                            </strong>
                         </div>
-                        <div class="card-footer small text-muted actualizacion"></div>
-                    </div>
+                        <table border="1" cellpadding="3">
+                            <tr>
+                                <td><strong>Vendedor:
 
-                    
-                    <!-- Area Chart Example-->
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <i class="fas fa-chart-pie"></i>
-                            Dia de Trabajo</div>
-                        <div class="card-body">
-                            <canvas id="myPieChart" width="100%" height="30"></canvas>
+                                    </strong></td>
+                                <td><span id="vendedor"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pedidos:
+
+                                    </strong></td>
+                                <td><span id="pedidosRealizados"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>No Ventas:
+
+                                    </strong></td>
+                                <td><span id="noVentas"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Venta Detalle:
+
+                                    </strong></td>
+                                <td><span id="ventasDetalle"></span></td>
+                            </tr>
+                            <tr>
+                                    <td><strong>Venta Mayoreo:
+    
+                                        </strong></td>
+                                    <td><span id="ventasMayoreo"></span></td>
+                            </tr>
+                            <tr>
+                                    <td><strong>Total de Ventas:
+    
+                                        </strong></td>
+                                    <td><span id="totalVentas"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Venta Insuficiente:
+
+                                    </strong></td>
+                                <td><span id="ventaInsuficiente"></span></td>
+                            </tr>
+                        </table>
+                        <br />
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-primary" id="cerrarDia"><i class="fas fa-lock"></i>
+                                Cerrar Dia</button>
                         </div>
-                        <div class="card-footer small text-muted actualizacion"></div>
                     </div>
-
-
+                    <div class="card-footer small text-muted actualizacion"></div>
                 </div>
-                <!-- /.container-fluid -->
 
-                <!-- Sticky Footer -->
-                <footer class="sticky-footer">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Todos los Derechos Reservados © Distribuidora Castillo - 2019</span>
-                        </div>
+
+                <!-- Area Chart Example-->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-chart-pie"></i>
+                        Dia de Trabajo</div>
+                    <div class="card-body">
+                        <canvas id="myPieChart" width="100%" height="30"></canvas>
                     </div>
-                </footer>
+                    <div class="card-footer small text-muted actualizacion"></div>
+                </div>
+
 
             </div>
-            <!-- /.content-wrapper -->
+            <!-- /.container-fluid -->
 
-        </div>
-        <!-- /#wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Salir de la Aplicación</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Haga click en Cerrar Sesión si desea salir del sistema. Para volver a entrar debera recargar todos los modelos con conexión activa a internet.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-primary" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Todos los Derechos Reservados © Distribuidora Castillo - 2019</span>
                     </div>
                 </div>
-            </div>
-        </div>
+            </footer>
 
-        <!-- MODAL -->
-        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Comercial Castillo</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="modalInfoText"></div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
-                    </div>
+        </div>
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Salir de la Aplicación</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Haga click en Cerrar Sesión si desea salir del sistema. Para volver a entrar
+                    debera recargar todos los modelos con conexión activa a internet.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- MODAL -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Comercial Castillo</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalInfoText"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Page level plugin JavaScript-->
-        <script src="vendor/chart.js/Chart.min.js"></script>
-        <script src="vendor/datatables/jquery.dataTables.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin.min.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-        <!-- Archivo Util -->
-        <script src="app/utils.js"></script>
-        <!-- Archivo Control -->
-        <script src="app/control.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
 
-        <!-- Archivo Dashboard -->
-        <script src="app/dashboard.js"></script>
-    </body>
+    <!-- Archivo Util -->
+    <script src="app/utils.js"></script>
+    <!-- Archivo Control -->
+    <script src="app/control.js"></script>
+
+    <!-- Archivo Dashboard -->
+    <script src="app/dashboard.js"></script>
+</body>
 
 </html>

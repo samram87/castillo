@@ -78,6 +78,10 @@ $(document).ready(function () {
             var iUom = $("#uom").val();
             linea.producto = producto;
             linea.cantidad = parseFloat($("#cantidad").val());
+            linea.insuficiente=false;
+            if(linea.cantidad>parseFloat($("#existencia").val())){
+                linea.insuficiente=true;
+            }
             linea.uom = producto.uom[$("#uom").val()];
             linea.observacion = $("#observacionLinea").val();
             var tipoPrecio = $("#tipoPrecio").val();
@@ -247,6 +251,7 @@ function limpiarLinea() {
     $("#productosHijos tbody").empty();
     $("#divProductosHijos").hide();
     $("#subtotalPrevio").html("");
+    $("#existencia").val("");
     producto = null;
     updatePrecio();
     precioMasBajo = 1000000;
@@ -402,7 +407,7 @@ function setProducto(pos) {
         $("#productosHijos tbody").empty();
         $.each(prods, function (i, item) {
             var tr = $('<tr>').append(
-                    $('<td>').html(item.nombre)
+                    $('<td>').html(item.abrev)
                     );
             var select = '<select class="form-control uomHijo"  corr="' + i + '">';
             $.each(item.uom, function (j, uom) {
@@ -422,7 +427,19 @@ function setProducto(pos) {
         $("#productosHijos tbody").empty();
         $("#divProductosHijos").hide();
     }
+    var existencia=getExistencia(producto);
+    $("#existencia").val(existencia);
+}
 
+function getExistencia(producto){
+    var lista = JSON.parse(getLS("Price"));
+    var existencia = 0;
+    $.each(lista, function (i, item) {
+        if(item.Codigo==producto.codigo){
+            existencia=parseFloat(item.Existencias).toFixed(2);
+        }
+    });
+    return existencia;
 }
 
 function getProductosHijos(producto) {
