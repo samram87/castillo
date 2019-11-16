@@ -7,10 +7,15 @@ var precioMasBajo = 1000000;
 var lineaActual = 0;
 var surtido = [];
 var modalShowed = false;
+var estado ={};
 $(document).ready(function () {
+    estado = JSON.parse(getLS("estado"));
     productos = JSON.parse(getLS("Productos"));
     clientes = JSON.parse(getLS("Clientes"));
     cliente = getClienteActual();
+
+    
+
     if (pedidoExistente(cliente)) {
         pedido = getPedido(cliente);
         actualizarPedido();
@@ -45,6 +50,12 @@ $(document).ready(function () {
                 pedido.longitud = APP.longitud;
             }
         }, 2000);
+    }
+
+    if (estado.cerrado) {
+        $("#addLinea").removeClass("btn-primary");
+        $("#addPedido").removeClass("btn-success");
+        $(".btn-danger").removeClass("btn-danger");
     }
 
 
@@ -180,11 +191,11 @@ $(document).ready(function () {
             actualizarPedido();
         }
     });
-
+    
     $("#addPedido").click(function () {
         if(pedido.lineas.length==0){
             alerta("No ha ingresado productos al pedido.");
-        }else {
+        }else if(estado.abierto) {
             pedido.tipo = "PEDIDO";
             pedido.status = "LOCAL";
             pedido.observacion = $("#observacion").val();
@@ -208,6 +219,8 @@ $(document).ready(function () {
             setTimeout(function () {
                 goto("dashboard.html");
             }, 2000);
+        }else{
+            alerta("El Dia ha sido cerrado no puede guardar nada mas");
         }
     });
 
@@ -301,6 +314,11 @@ function actualizarPedido() {
 }
 
 function deleteLine(pos) {
+
+    if(estado.cerrado){
+        alerta("El dia ha sido cerrado");
+        return false;
+    }
     var msg = "";
     if (pedido.lineas[pos].tieneHijos) {
         msg = ". Esta linea contiene promociones, estas tambien se eliminarán";
@@ -312,6 +330,10 @@ function deleteLine(pos) {
 }
 
 function validarLinea() {
+    if(estado.abierto==false){
+        alerta("El dia ha sido cerrado");
+        return false;
+    }
     if (producto == null) {
         alerta("Seleccione un producto a agregar.");
         return false;
