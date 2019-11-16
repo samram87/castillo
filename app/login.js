@@ -57,14 +57,16 @@ function sincronizarDatos() {
                         if(d==null){
                             setLS("pedidos", JSON.stringify([]));
                             setLS("last_date",getToday());
+                            setLS("estado", JSON.stringify(estado));
                         }else{
 
                             if(d!=getToday()){
                                 setLS("pedidos", JSON.stringify([]));
                                 setLS("last_date",getToday());
+                                setLS("estado", JSON.stringify(estado));
                             }
                         }
-                        setLS("estado", JSON.stringify(estado));
+                        
                         setLS("clientesVisitados", JSON.stringify([]));
                         setLS("fechaActualizacion", fecha);
                         goto("dashboard.html");
