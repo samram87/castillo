@@ -15,7 +15,7 @@
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Esta aplicacion utiliza geolocalización." />
     </plugin>
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
-    
+    <plugin name="cordova-plugin-network-information"/>
     <icon src="icon.png" />
 
     <platform name="android">

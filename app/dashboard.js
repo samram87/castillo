@@ -23,23 +23,35 @@ $(document).ready(function() {
         }
     });
     $("#cerrarDia").click(function() {
-        if (estado.cerrado) {
-            cerrado();
-        } else {
-            if (confirm("Esta a punto de cerar el dia. Ya no podra agregar mas pedidos ni registrar No Ventas. ¿Desea Continuar?")) {
-                alerta("Sincronizando Pedidos Pendientes y Recargando");
-                estado.abierto = false;
-                estado.cerrado = true;
-                setLS("estado", JSON.stringify(estado));
-                doSincronize();
-                var texto = $.ajax({
-                    type: "POST",
-                    url: APP.url + "dal/cerrarDia.php",
-                    data: { idUsuario: getIdUsuario(), pedidos: cntClientesPedido, noventas: cntClientesNoVenta, totaldetalle: ventasDetalle, totalmayoreo: ventasMayoreo,ventaInsuficiente:ventaInsuficiente },
-                    async: false
-                }).responseText;
-                window.location.reload();
+        if(checkInternet()){       
+            if (estado.cerrado) {
+                cerrado();
+            } else {
+                if (confirm("Esta a punto de cerar el dia. Ya no podra agregar mas pedidos ni registrar No Ventas. ¿Desea Continuar?")) {
+                    //alerta("Sincronizando Pedidos Pendientes y Recargando");
+                    doSincronize(function(){$.ajax({
+                        type: "POST",
+                        url: APP.url + "dal/cerrarDia.php",
+                        data: { idUsuario: getIdUsuario(), pedidos: cntClientesPedido, noventas: cntClientesNoVenta, totaldetalle: ventasDetalle, totalmayoreo: ventasMayoreo,ventaInsuficiente:ventaInsuficiente },
+                        success:function(data){
+                            alerta("Cierre exitoso");
+                            estado.abierto = false;
+                            estado.cerrado = true;
+                            setLS("estado", JSON.stringify(estado));
+                            setTimeout(function(){window.location.reload();},1500);
+                        }
+                    }).fail(function() {
+                        alerta("Ocurrio un error. Verifique si hay internet");
+                    });},function(){
+                        alerta("No se pudo sincronizar con el servidor por favor intente en un lugar con mejor señal de internet");
+                        setTimeout(function() {
+                            //goto("dashboard.html");
+                        }, 10000);
+                    });
+                }
             }
+        }else{
+            alerta("No hay conexión a internet en estos momentos, por favor intentelo mas tarde");
         }
     });
     if (estado.cerrado) {
@@ -119,7 +131,7 @@ function crearTablaPedidos() {
         var tr = $('<tr>').append(
             $('<td>').html("<strong>" + item.cliente.nombre + "</strong>")
         );
-        if (item.status == "LOCAL") {
+        //if (item.status == "LOCAL") {
             if (item.tipo == "PEDIDO") {
                 $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.cliente.codigo + '\')"><i class="fas fa-fw fa-cart-plus"></i> Ver</button>'));
             } else {
@@ -130,28 +142,32 @@ function crearTablaPedidos() {
             } else {
 
             }
-            $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="deletePedido(\'' + i + '\')" ><i class="fas fa-fw fa-ban"></i> Eliminar</button>'));
-        } else {
+            if (item.tipo != "PEDIDO") {
+                $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="deletePedido(\'' + i + '\')" ><i class="fas fa-fw fa-ban"></i> Eliminar</button>'));
+            }else{
+                $(tr).append($('<td>').html(''));
+            }
+        /*} else {
             $(tr).append($('<td >').html('Sincronizado'));
             $(tr).append($('<td >').html(''));
-        }
+        }*/
         $("#tablaPedidos tbody").append(tr);
 
     });
 }
 
 function sincronizarPedidos() {
-    if (confirm("Esta Seguro que desea sincronizar los pedidos. Ya no podra editarlos.")) {
+    if (confirm("Esta Seguro que desea sincronizar los pedidos.")) {
         doSincronize(function(){
             alerta("Pedidos Sincronizados");
             setTimeout(function() {
                 goto("dashboard.html");
-            }, 1000);
+            }, 1500);
         },function(){
+            alerta("No pudieron ser sincronizadas las transacciones por favor intente en un lugar con mejor señal de internet");
             setTimeout(function() {
-                alerta("No pudieron ser sincronizadas las transacciones por favor intente en un lugar con mejor señal de internet");
-                goto("dashboard.html");
-            }, 3000);
+                //goto("dashboard.html");
+            }, 10000);
         });
 
         
@@ -163,9 +179,9 @@ function doSincronize(callback,failCallback) {
     var pedToSend=[];
     for(var i=0;i<pedidos.length;i++){
         var item=pedidos[i];
-        if (item.status != "online") {
-            pedToSend.push(item);
-        }
+        //if (item.status != "online") {
+        pedToSend.push(item);
+        //}
     }
     $.ajax({
         type: "POST",
@@ -187,6 +203,8 @@ function doSincronize(callback,failCallback) {
                 failCallback();
             }
         },error:failCallback
+    }).fail(function(){
+        failCallback();
     });
     setLS("pedidos", JSON.stringify(pedidos));
 }
@@ -250,7 +268,7 @@ function generarGrafico() {
         var p = pedidos[i];
         if (p.tipo == "PEDIDO") {
             for(var j=0;j<p.lineas.length;j++){
-                if(p.lineas[j].tipoPrecio=="M"){
+                if(p.lineas[j].tipoPrecio=="C"){
                     ventasMayoreo+=p.lineas[j].total;
                 }else{
                     ventasDetalle+=p.lineas[j].total;

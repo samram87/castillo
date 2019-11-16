@@ -16,13 +16,13 @@ function cargarUsuario() {
     } else {
         var hash = CryptoJS.MD5($("#password").val());
         var user = $("#user").val().toLowerCase();
-        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash, function(data) {
+        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash+"&version=1.0", function(data) {
             var usuario = data;
             if (usuario.length > 0) {
                 window.localStorage.setItem("usuario", JSON.stringify(usuario[0]));
                 sincronizarDatos(usuario[0].idUsuario);
             } else {
-                alerta('El usuario o la contraseña son incorrectos.');
+                alerta('El usuario o la contraseña son incorrectos. (Verifique que posee la ultima version de la aplicacion)');
             }
         });
     }
@@ -53,8 +53,18 @@ function sincronizarDatos() {
                         var estado = {};
                         estado.abierto = true;
                         estado.cerrado = false;
+                        var d=getLS("last_date");
+                        if(d==null){
+                            setLS("pedidos", JSON.stringify([]));
+                            setLS("last_date",getToday());
+                        }else{
+
+                            if(d!=getToday()){
+                                setLS("pedidos", JSON.stringify([]));
+                                setLS("last_date",getToday());
+                            }
+                        }
                         setLS("estado", JSON.stringify(estado));
-                        setLS("pedidos", JSON.stringify([]));
                         setLS("clientesVisitados", JSON.stringify([]));
                         setLS("fechaActualizacion", fecha);
                         goto("dashboard.html");
@@ -63,4 +73,9 @@ function sincronizarDatos() {
             });
         });
     });
+}
+
+function getToday(){
+    var d=new Date();
+    return d.getDate()+'/'+d.getMonth()+'/'+d.getFullYear();
 }

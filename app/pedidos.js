@@ -22,6 +22,7 @@ $(document).ready(function () {
         pedido.items = 0;
         pedido.totalLineas = 0;
         pedido.observacion = "";
+        pedido.uuid=getUuid();
     }
     if (cliente.LATITUD == "") {
         $("#alertaGPS").show();
@@ -33,7 +34,7 @@ $(document).ready(function () {
         }, 2000);
     } else {
         setTimeout(function () {
-            if (!areWeNear(cliente, 0.5)) {
+            if (!areWeNear(cliente, 1)) {
                 alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
                 setTimeout(function () {
                     goto("dashboard.html");
@@ -79,6 +80,7 @@ $(document).ready(function () {
             linea.producto = producto;
             linea.cantidad = parseFloat($("#cantidad").val());
             linea.insuficiente=false;
+            linea.uuid=getUuid();
             if(linea.cantidad>parseFloat($("#existencia").val())){
                 linea.insuficiente=true;
             }
@@ -86,6 +88,11 @@ $(document).ready(function () {
             linea.observacion = $("#observacionLinea").val();
             var tipoPrecio = $("#tipoPrecio").val();
             var idPrecio = parseInt($("#idPrecio").val());
+            if (cliente.clase == "D") {
+                linea.precio = producto.uom[$("#uom").val()].preciosTienda[idPrecio];
+            } else {
+                linea.precio = producto.uom[$("#uom").val()].precios[idPrecio];
+            }
             linea.tipoPrecio = tipoPrecio;
             if (tipoPrecio == 'M') {
                 linea.precio = producto.uom[$("#uom").val()].precios[idPrecio];
@@ -491,7 +498,7 @@ function updatePrecio() {
                 if (parseFloat(item.precio) < precioMasBajo) {
                     precioMasBajo = parseFloat(item.precio);
                 }
-                $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;"  onclick="setPrecio(\'D\',' + i + ',' + item.precio + ' )" >$' + item.precio + '</a>');
+                $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;"  onclick="setPrecio(\''+item.tipo+'\',' + i + ',' + item.precio + ' )" >$' + item.precio +' ('+item.tipo+')'+ '</a>');
             } else {
                 //$("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
             }
@@ -503,7 +510,7 @@ function updatePrecio() {
                 if (parseFloat(item.precio) < precioMasBajo) {
                     precioMasBajo = parseFloat(item.precio);
                 }
-                $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;" onclick="setPrecio(\'M\',' + i + ',' + item.precio + ' )" >$' + item.precio + '</a>');
+                $("#preciosDisponibles").append('<a class="dropdown-item" href="javascript:void;" onclick="setPrecio(\''+item.tipo+'\',' + i + ',' + item.precio + ' )" >$' + item.precio +' ('+item.tipo+')'+ '</a>');
             } else {
                 //$("#preciosDisponibles").append('<a class="dropdown-item disabled" style="color:gray;" >' + item.precio + ' (>' + item.desde + ')' + '</a>');
             }

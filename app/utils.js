@@ -84,12 +84,15 @@ function alerta(mensaje) {
 }
 
 function checkInternet() {
-    //TODO: Quitar el return true en la app.
-    return true;
-    var networkState = navigator.connection.type;
-    if (networkState == Connection.NONE) {
-        return false;
-    } else { return true; }
+    try{
+        var networkState = navigator.connection.type;
+        if (networkState == Connection.NONE) {
+            return false;
+        } else { return true; }
+    }catch(ex){
+        return true;
+    }
+    
 }
 
 
@@ -149,6 +152,16 @@ function arePointsNear(checkPoint, centerPoint, km) {
     var dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
     return Math.sqrt(dx * dx + dy * dy) <= km;
 }
+
+function getUuid() {
+    var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+        v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+    return uuid;
+};
+
 
 /*
  * CryptoJS
