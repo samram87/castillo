@@ -248,7 +248,7 @@ function generarGrafico() {
     var clientesDia = JSON.parse(getLS("Rutas"));
 
     var clientesPendientes = clientesDia.length;
-    var clientesVisitados = JSON.parse(getLS("clientesVisitados"));
+    var clientesVisitados = JSON.parse(getLS("pedidos"));
 
     if (clientesVisitados.length > 0) {
 

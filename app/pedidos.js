@@ -21,7 +21,10 @@ $(document).ready(function () {
         actualizarPedido();
         $("#observacion").val(pedido.observacion);
     } else {
-        pedido.cliente = cliente;
+        pedido.cliente = {};
+        pedido.cliente.codigo=cliente.codigo;
+        pedido.cliente.clase=cliente.clase;
+        pedido.cliente.nombre=cliente.nombre;
         pedido.lineas = [];
         pedido.total = 0;
         pedido.items = 0;
@@ -39,7 +42,7 @@ $(document).ready(function () {
         }, 2000);
     } else {
         setTimeout(function () {
-            if (!areWeNear(cliente, 1)) {
+            if (!areWeNear(cliente, 1.1)) {
                 alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
                 setTimeout(function () {
                     goto("dashboard.html");
@@ -88,7 +91,9 @@ $(document).ready(function () {
         if (validarLinea()) {
             var linea = {};
             var iUom = $("#uom").val();
-            linea.producto = producto;
+            linea.producto = {};
+            linea.producto.codigo=producto.codigo;
+            linea.producto.nombre=producto.nombre;
             linea.cantidad = parseFloat($("#cantidad").val());
             linea.insuficiente=false;
             linea.uuid=getUuid();
