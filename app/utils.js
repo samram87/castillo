@@ -5,7 +5,7 @@
  */
 
 var APP = {
-    url: "http://75.101.212.97/core/pedidos/", //url="http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos"
+    url: "http://75.101.242.153/core/pedidos/", //url="http://ec2-3-17-121-233.us-east-2.compute.amazonaws.com/core/pedidos"
     login: "index.html",
     dashboard: "dashboard.html",
     latitud: null,
