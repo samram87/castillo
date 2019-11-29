@@ -39,7 +39,9 @@ $(document).ready(function () {
     $("#addPedido").click(function(){
         pedido.tipo="NOVENTA";
         pedido.status="LOCAL";
+        pedido.uuid=getUuid();
         pedido.observacion=$("#observacion").val();
+        pedido.timestamp= (new Date().getTime());
         if(pedido.observacion==""){
             alerta("Por Favor Indique la razon de la 'No Venta'");
             return;

@@ -31,6 +31,7 @@ $(document).ready(function () {
         pedido.totalLineas = 0;
         pedido.observacion = "";
         pedido.uuid=getUuid();
+        pedido.timestamp= (new Date().getTime());
     }
     if (cliente.LATITUD == "") {
         $("#alertaGPS").show();
@@ -134,6 +135,7 @@ $(document).ready(function () {
                         var surtLine = {};
                         surtLine.hijo = producto.surtido[pos];
                         surtLine.cnt = cnt;
+                        surtLine.uuid=getUuid();
                         //surtLine.uom=producto.hijos[pos].uom;
                         surtido.push(surtLine);
                     }
@@ -176,6 +178,7 @@ $(document).ready(function () {
                          lineaProm.cantidad=lineaProm.cantidad*fact_conv;
                          }*/
                         lineaProm.uom = prodPromo.uom[uom];
+                        lineaProm.uuid=getUuid();
                         lineaProm.observacion = $("#observacionLinea").val();
                         lineaProm.esRegalo = true;
                         lineaProm.padre = idLineaPadre;
@@ -440,8 +443,9 @@ function setProducto(pos) {
         var prods = getProductosHijos(producto);
         $("#productosHijos tbody").empty();
         $.each(prods, function (i, item) {
+            var ex=getExistencia(item);
             var tr = $('<tr>').append(
-                    $('<td>').html(item.abrev)
+                    $('<td>').html(item.abrev+" ("+ex+")")
                     );
             var select = '<select class="form-control uomHijo"  corr="' + i + '">';
             $.each(item.uom, function (j, uom) {
@@ -456,6 +460,9 @@ function setProducto(pos) {
 
             $("#productosHijos tbody").append(tr);
         });
+        
+
+
         $("#divProductosHijos").show();
     } else {
         $("#productosHijos tbody").empty();
@@ -506,6 +513,7 @@ function updatePrecio() {
 
     $("#preciosDisponibles").empty();
     if (producto == null) {
+        $("#cantidadLlenar").html("");
         $("#preciosDisponibles").append('<h6 class="dropdown-header">Seleccione un producto</h6>');
         $("#precio").prop('disabled', true);
         return;
@@ -544,7 +552,17 @@ function updatePrecio() {
         });
     }
 
-
+    if(producto.surtido.length>0){
+        
+        if (cnt != "" || cnt != 0) {
+            var cuom=producto.uom[uom];
+            var cntToFill=parseFloat(cnt)*parseFloat(cuom.cnt);
+            var luom=getLowestUomProd(producto);
+            $("#cantidadLlenar").html("Necesario: "+cntToFill+" de "+luom.nombre);
+        }else{
+            $("#cantidadLlenar").html("");
+        }
+    }
 
 
 }

@@ -4,6 +4,8 @@ var cntClientesNoVenta = 0;
 var ventasDetalle = 0;
 var ventasMayoreo = 0;
 var ventaInsuficiente=0;
+var lesstime=9999999999999;
+var maxtime=0;
 
 $(document).ready(function() {
     estado = JSON.parse(getLS("estado"));
@@ -32,7 +34,14 @@ $(document).ready(function() {
                     doSincronize(function(){$.ajax({
                         type: "POST",
                         url: APP.url + "dal/cerrarDia.php",
-                        data: { idUsuario: getIdUsuario(), pedidos: cntClientesPedido, noventas: cntClientesNoVenta, totaldetalle: ventasDetalle, totalmayoreo: ventasMayoreo,ventaInsuficiente:ventaInsuficiente },
+                        data: { idUsuario: getIdUsuario(),
+                             pedidos: cntClientesPedido, 
+                             noventas: cntClientesNoVenta, 
+                             totaldetalle: ventasDetalle,
+                             totalmayoreo: ventasMayoreo,
+                             ventaInsuficiente:ventaInsuficiente,
+                             primerPedido:lesstime,
+                             ultimoPedido:maxtime },
                         success:function(data){
                             alerta("Cierre exitoso");
                             estado.abierto = false;
@@ -264,6 +273,8 @@ function generarGrafico() {
     }
     
     var pedidos = JSON.parse(getLS("pedidos"));
+               //1575012017620
+
     for (var i = 0; i < pedidos.length; i++) {
         var p = pedidos[i];
         if (p.tipo == "PEDIDO") {
@@ -278,7 +289,14 @@ function generarGrafico() {
                 }
             }
         }
+        if(p.timestamp<lesstime){
+            lesstime=p.timestamp;
+        }
+        if(p.timestamp>maxtime){
+            maxtime=p.timestamp;
+        }
     }
+
     var totalVentas = ventasDetalle + ventasMayoreo;
 
     var user= JSON.parse(getLS("usuario"));
@@ -290,7 +308,12 @@ function generarGrafico() {
     $("#ventasMayoreo").html(ventasMayoreo);
     $("#totalVentas").html(totalVentas);
     $("#ventaInsuficiente").html(ventaInsuficiente);
+    if(pedidos.length>0){
+        $("#primerPedido").html(getTimeStamp(lesstime));
+        $("#ultimoPedido").html(getTimeStamp(maxtime));
 
+    }
+    
     Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
     Chart.defaults.global.defaultFontColor = '#292b2c';
 
@@ -306,4 +329,9 @@ function generarGrafico() {
         },
     });
 
+}
+
+function getTimeStamp(timestamp){
+    var d=new Date(timestamp);
+    return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
 }
