@@ -301,12 +301,12 @@ function generarGrafico() {
 
     var user= JSON.parse(getLS("usuario"));
     $("#vendedor").html(user.nombre);
-    $("#clientesVisitados").html(clientesVisitados.length);
+    $("#clientesVisitados").html((cntClientesPedido+cntClientesNoVenta));
     $("#pedidosRealizados").html(cntClientesPedido);
     $("#noVentas").html(cntClientesNoVenta);
-    $("#ventasDetalle").html(ventasDetalle);
-    $("#ventasMayoreo").html(ventasMayoreo);
-    $("#totalVentas").html(totalVentas);
+    $("#ventasDetalle").html(getMoneyValue(ventasDetalle));
+    $("#ventasMayoreo").html(getMoneyValue(ventasMayoreo));
+    $("#totalVentas").html(getMoneyValue(totalVentas));
     $("#ventaInsuficiente").html(ventaInsuficiente);
     if(pedidos.length>0){
         $("#primerPedido").html(getTimeStamp(lesstime));
@@ -331,7 +331,34 @@ function generarGrafico() {
 
 }
 
+function getMoneyValue(number){
+    var value='';
+    var round = Math.round(number*100)/100;
+    if(Number.isInteger(round)){
+        value=round+'.00';
+    }else{
+        if(Number.isInteger(round*10)){
+            value=round+'0';
+        }else{
+            value=round;
+        }
+    }
+    return '$ '+value;
+}
+
 function getTimeStamp(timestamp){
     var d=new Date(timestamp);
-    return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+    var hour=d.getHours();
+    if(d.getHours()<10){
+        hour='0'+d.getHours();
+    }
+    var minute=d.getMinutes();
+    if(d.getMinutes()<10){
+        minute='0'+d.getMinutes();
+    }
+    var second=d.getSeconds();
+    if(d.getSeconds()<10){clientesVisitados
+        second='0'+d.getSeconds();
+    }
+    return hour+':'+minute+':'+second;
 }

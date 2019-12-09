@@ -40,16 +40,24 @@ $(document).ready(function () {
             pedido.cliente.LONGITUD = APP.longitud;
             pedido.latitud = APP.latitud;
             pedido.longitud = APP.longitud;
+            pedido.distance=getDistance(pedido.cliente);
+            pedido.fuera_rango='N';
         }, 2000);
     } else {
         setTimeout(function () {
             if (!areWeNear(cliente, 1.1)) {
-                alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                setTimeout(function () {
-                    goto("dashboard.html");
-                }, 2000);
+                //alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
+                //setTimeout(function () {
+                //    goto("dashboard.html");
+                //}, 2000);
+                pedido.distance=getDistance(cliente);
+                pedido.fuera_rango='S';
+                pedido.latitud = APP.latitud;
+                pedido.longitud = APP.longitud;
             } else {
                 //Guardamos en el pedido la lat,long desde donde se guardo
+                pedido.distance=getDistance(cliente);
+                pedido.fuera_rango='N';
                 pedido.latitud = APP.latitud;
                 pedido.longitud = APP.longitud;
             }
