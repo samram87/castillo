@@ -20,14 +20,9 @@ $(document).ready(function () {
         },2000);
     }else{
         setTimeout(function(){
-            if(!areWeNear(cliente,0.5)){
-                alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                setTimeout(function(){goto("dashboard.html");},2000);
-            }else{
-                //Guardamos en el pedido la lat,long desde donde se guardo
-                pedido.latitud=APP.latitud;
-                pedido.longitud=APP.longitud;
-            }
+            //Guardamos en el pedido la lat,long desde donde se guardo
+            pedido.latitud=APP.latitud;
+            pedido.longitud=APP.longitud;
         },2000);
     }
 
