@@ -20,9 +20,9 @@ $(document).ready(function() {
     });
 
     $("#sincronizar").click(function() {
-        if (estado.abierto) {
+        //if (estado.abierto) {
             sincronizarPedidos();
-        }
+        //}
     });
     $("#cerrarDia").click(function() {
         if(checkInternet()){       
@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
     if (estado.cerrado) {
         $("#cerrarDia").removeClass("btn-primary");
-        $("#sincronizar").removeClass("btn-success");
+        //$("#sincronizar").removeClass("btn-success");
     }
 
 });
