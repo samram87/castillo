@@ -6,6 +6,9 @@ var ventasMayoreo = 0;
 var ventaInsuficiente=0;
 var lesstime=9999999999999;
 var maxtime=0;
+var total_a=0;
+var total_b=0;
+var total_c=0;
 
 $(document).ready(function() {
     estado = JSON.parse(getLS("estado"));
@@ -41,7 +44,10 @@ $(document).ready(function() {
                              totalmayoreo: ventasMayoreo,
                              ventaInsuficiente:ventaInsuficiente,
                              primerPedido:lesstime,
-                             ultimoPedido:maxtime },
+                             ultimoPedido:maxtime,
+                             totalA:total_a,
+                             totalB:total_b,
+                             totalC:total_c },
                         success:function(data){
                             alerta("Cierre exitoso");
                             estado.abierto = false;
@@ -281,7 +287,13 @@ function generarGrafico() {
             for(var j=0;j<p.lineas.length;j++){
                 if(p.lineas[j].tipoPrecio=="C"){
                     ventasMayoreo+=p.lineas[j].total;
+                    total_c+=p.lineas[j].total;
                 }else{
+                    if(p.lineas[j].tipoPrecio=="A"){
+                        total_a+=p.lineas[j].total;
+                    }else if(p.lineas[j].tipoPrecio=="B"){
+                        total_b+=p.lineas[j].total;
+                    }
                     ventasDetalle+=p.lineas[j].total;
                 }
                 if(p.lineas[j].insuficiente){
@@ -304,14 +316,16 @@ function generarGrafico() {
     $("#clientesVisitados").html((cntClientesPedido+cntClientesNoVenta));
     $("#pedidosRealizados").html(cntClientesPedido);
     $("#noVentas").html(cntClientesNoVenta);
-    $("#ventasDetalle").html(getMoneyValue(ventasDetalle));
-    $("#ventasMayoreo").html(getMoneyValue(ventasMayoreo));
+    //$("#ventasDetalle").html(getMoneyValue(ventasDetalle));
+    //$("#ventasMayoreo").html(getMoneyValue(ventasMayoreo));
+    $("#ventasA").html(getMoneyValue(total_a));
+    $("#ventasB").html(getMoneyValue(total_b));
+    $("#ventasC").html(getMoneyValue(total_c));
     $("#totalVentas").html(getMoneyValue(totalVentas));
     $("#ventaInsuficiente").html(ventaInsuficiente);
     if(pedidos.length>0){
         $("#primerPedido").html(getTimeStamp(lesstime));
         $("#ultimoPedido").html(getTimeStamp(maxtime));
-
     }
     
     Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';

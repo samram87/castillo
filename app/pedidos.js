@@ -8,7 +8,16 @@ var lineaActual = 0;
 var surtido = [];
 var modalShowed = false;
 var estado ={};
+var allow_exit=false;
 $(document).ready(function () {
+    window.onbeforeunload = function() {
+        if(!allow_exit){
+            return 'Aun no ha guardado el pedido';
+        }
+    }
+
+
+
     estado = JSON.parse(getLS("estado"));
     productos = JSON.parse(getLS("Productos"));
     clientes = JSON.parse(getLS("Clientes"));
@@ -45,11 +54,16 @@ $(document).ready(function () {
         }, 2000);
     } else {
         setTimeout(function () {
+            if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" ){
+                alerta("Debe tener activo el GPS para poder realizar un pedido");
+                allow_exit=true;
+                setTimeout(function () {
+                       goto("dashboard.html");
+                    }, 2000);
+            }
             if (!areWeNear(cliente, 1.1)) {
                 //alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                //setTimeout(function () {
-                //    goto("dashboard.html");
-                //}, 2000);
+                //
                 pedido.distance=getDistance(cliente);
                 pedido.fuera_rango='S';
                 pedido.latitud = APP.latitud;
@@ -61,7 +75,7 @@ $(document).ready(function () {
                 pedido.latitud = APP.latitud;
                 pedido.longitud = APP.longitud;
             }
-        }, 2000);
+        }, 3000);
     }
 
     if (estado.cerrado) {
@@ -232,6 +246,7 @@ $(document).ready(function () {
             }
             setLS("pedidos", JSON.stringify(pedidos));
             alerta("Pedido Guardado con exito");
+            allow_exit=true;
             setTimeout(function () {
                 goto("dashboard.html");
             }, 2000);
