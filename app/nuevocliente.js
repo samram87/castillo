@@ -196,6 +196,15 @@ $(document).ready(function () {
         }
     });
     
+    $("#cancelar").click(function(){
+        if(confirm("¿Cancelar el pedido? Se perdera lo ingresado")){
+            allow_exit=true;
+            goto("dashboard.html");
+        }
+    });
+
+
+
     $("#addPedido").click(function () {
         if(pedido.lineas.length==0){
             alerta("No ha ingresado productos al pedido.");
