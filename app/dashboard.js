@@ -22,6 +22,10 @@ $(document).ready(function() {
         goto("listaprecios.html");
     });
 
+    $("#nuevoCliente").click(function() {
+        goto("nuevocliente.html");
+    });
+
     $("#sincronizar").click(function() {
         //if (estado.abierto) {
             sincronizarPedidos();
@@ -112,8 +116,8 @@ function getClientesPendientes() {
 function crearTablaPendientes(clientesPendientes) {
 
     $.each(clientesPendientes, function(i, item) {
-        
-        //var trOriginal=$('<tr>').append($);
+        if(item.codigoCliente!="214919"){
+            //var trOriginal=$('<tr>').append($);
         var table="<td>"+
         "<div class='row'>"+
         "<div class='col-sm-6'><strong>"+item.codigoCliente + "</strong></div><div class='col-sm-6'><strong>"+ item.cliente+"</strong></div>"+
@@ -132,7 +136,7 @@ function crearTablaPendientes(clientesPendientes) {
 
         var tr = $('<tr>').html(table);
         $("#clientesPendientes tbody").append(tr);
-
+        }
     });
 }
 
@@ -144,7 +148,9 @@ function crearTablaPedidos() {
     var pedidos = JSON.parse(getLS("pedidos"));
     $.each(pedidos, function(i, item) {
         var tr = $('<tr>').append(
-            $('<td>').html("<strong>" + item.cliente.nombre + "</strong>")
+
+            $('<td>').html(item.cliente.codigo=="214919"?"<strong>" + item.cliente.nombre + "</strong><br><span style='font-size:0.7em'>"+item.observacion+"</span>":"<strong>" + item.cliente.nombre + "</strong>")
+
         );
         //if (item.status == "LOCAL") {
             if (item.tipo == "PEDIDO") {
@@ -153,14 +159,19 @@ function crearTablaPedidos() {
                 $(tr).append($('<td>').html('NO VENTA'));
             }
             if (item.status == "LOCAL") {
-
+               
             } else {
 
             }
             if (item.tipo != "PEDIDO") {
                 $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="deletePedido(\'' + i + '\')" ><i class="fas fa-fw fa-ban"></i> Eliminar</button>'));
             }else{
-                $(tr).append($('<td>').html(''));
+                if(item.status=="LOCAL"){
+                    $(tr).append($('<td>').html('<button class="btn btn-danger" onclick="deletePedido(\'' + i + '\')" ><i class="fas fa-fw fa-ban"></i> Eliminar</button>'));
+                }else{
+                    $(tr).append($('<td>').html(''));
+                }
+                
             }
         /*} else {
             $(tr).append($('<td >').html('Sincronizado'));
@@ -238,24 +249,29 @@ function noVenta(codigoCliente) {
 function deletePedido(pos) {
     if (confirm("Esta seguro que desea eliminar este pedido")) {
         var pedidos = JSON.parse(getLS("pedidos"));
-        var cCliente = pedidos[pos].cliente.codigo;
-        var clientesVisitados = JSON.parse(getLS("clientesVisitados"));
-        var posCv = -1;
-        if (clientesVisitados.length > 0) {
-            for (var i = 0; i < clientesVisitados.length; i++) {
-                var cv = clientesVisitados[i];
-                if (cv.codigoCliente == cCliente) {
-                    posCv = i;
+        if(pedidos[pos].status == "LOCAL"){
+            var cCliente = pedidos[pos].cliente.codigo;
+            var clientesVisitados = JSON.parse(getLS("clientesVisitados"));
+            var posCv = -1;
+            if (clientesVisitados.length > 0) {
+                for (var i = 0; i < clientesVisitados.length; i++) {
+                    var cv = clientesVisitados[i];
+                    if (cv.codigoCliente == cCliente) {
+                        posCv = i;
+                    }
+                }
+                if (posCv > -1) {
+                    clientesVisitados.splice(posCv, 1);
+                    setLS("clientesVisitados", JSON.stringify(clientesVisitados));
                 }
             }
-            if (posCv > -1) {
-                clientesVisitados.splice(posCv, 1);
-                setLS("clientesVisitados", JSON.stringify(clientesVisitados));
-            }
+            pedidos.splice(pos, 1);
+            setLS("pedidos", JSON.stringify(pedidos));
+            goto("dashboard.html");
+        }else{
+            alerta("El pedido ya fue sincronizado no puede eliminarlo.");
         }
-        pedidos.splice(pos, 1);
-        setLS("pedidos", JSON.stringify(pedidos));
-        goto("dashboard.html");
+        
     }
 }
 

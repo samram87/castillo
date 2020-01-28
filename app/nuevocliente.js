@@ -42,41 +42,15 @@ $(document).ready(function () {
         pedido.uuid=getUuid();
         pedido.timestamp= (new Date().getTime());
     }
-    if (cliente.LATITUD == "") {
-        $("#alertaGPS").show();
-        setTimeout(function () {
-            pedido.cliente.LATITUD = APP.latitud;
-            pedido.cliente.LONGITUD = APP.longitud;
-            pedido.latitud = APP.latitud;
-            pedido.longitud = APP.longitud;
-            pedido.distance=getDistance(pedido.cliente);
-            pedido.fuera_rango='N';
-        }, 2000);
-    } else {
-        setTimeout(function () {
-            if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" ){
-                alerta("Debe tener activo el GPS para poder realizar un pedido");
-                allow_exit=true;
-                setTimeout(function () {
-                       goto("dashboard.html");
-                    }, 2000);
-            }
-            if (!areWeNear(cliente, 1.1)) {
-                //alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
-                //
-                pedido.distance=getDistance(cliente);
-                pedido.fuera_rango='S';
-                pedido.latitud = APP.latitud;
-                pedido.longitud = APP.longitud;
-            } else {
-                //Guardamos en el pedido la lat,long desde donde se guardo
-                pedido.distance=getDistance(cliente);
-                pedido.fuera_rango='N';
-                pedido.latitud = APP.latitud;
-                pedido.longitud = APP.longitud;
-            }
-        }, 3000);
-    }
+    //$("#alertaGPS").show();
+    setTimeout(function () {
+        pedido.cliente.LATITUD = APP.latitud;
+        pedido.cliente.LONGITUD = APP.longitud;
+        pedido.latitud = APP.latitud;
+        pedido.longitud = APP.longitud;
+        pedido.distance=getDistance(pedido.cliente);
+        pedido.fuera_rango='N';
+    }, 2000);
 
     if (estado.cerrado) {
         $("#addLinea").removeClass("btn-primary");
@@ -225,6 +199,8 @@ $(document).ready(function () {
     $("#addPedido").click(function () {
         if(pedido.lineas.length==0){
             alerta("No ha ingresado productos al pedido.");
+        }else if( $("#observacion").val()==""){
+            alerta("Debe ingresar en la observación los datos del cliente nuevo.");
         }else if(estado.abierto) {
             pedido.tipo = "PEDIDO";
             pedido.status = "LOCAL";
@@ -258,14 +234,7 @@ $(document).ready(function () {
 });
 
 function pedidoExistente(clienteActual) {
-    var pedidos = JSON.parse(getLS("pedidos"));
-    var found = false;
-    $.each(pedidos, function (i, item) {
-        if (clienteActual.codigo == item.cliente.codigo) {
-            found = true;
-        }
-    });
-    return found;
+    return false;
 }
 
 function getPedido(clienteActual) {
@@ -413,7 +382,7 @@ function validarLinea() {
 }
 
 function getClienteActual() {
-    var codigoCliente = getLS("cliente");
+    var codigoCliente = "214919";
     var cliente = null;
     var clientes = JSON.parse(getLS("Clientes"));
 

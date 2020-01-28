@@ -16,7 +16,7 @@ function cargarUsuario() {
     } else {
         var hash = CryptoJS.MD5($("#password").val());
         var user = $("#user").val().toLowerCase();
-        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash+"&version=1.3", function(data) {
+        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash+"&version=1.4", function(data) {
             var usuario = data;
             if (usuario.length > 0) {
                 window.localStorage.setItem("usuario", JSON.stringify(usuario[0]));
