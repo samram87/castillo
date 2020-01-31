@@ -9,6 +9,7 @@ var surtido = [];
 var modalShowed = false;
 var estado ={};
 var allow_exit=false;
+var preciosActuales=[];
 $(document).ready(function () {
     window.onbeforeunload = function() {
         if(!allow_exit){
@@ -314,6 +315,7 @@ function limpiarLinea() {
     producto = null;
     updatePrecio();
     precioMasBajo = 1000000;
+    preciosActuales=[];
 }
 
 
@@ -390,6 +392,43 @@ function validarLinea() {
         if (parseFloat($("#precio").val()) < precioMasBajo) {
             alerta("El precio ingresado es menor al precio mas bajo posible");
             return false;
+        }else{
+            if($("#tipoPrecio").val()==""){
+                var precioDig=parseFloat($("#precio").val());
+                var precios=sort_by_key(preciosActuales,"precio");
+                var letra="";
+                for(var i=0;i<precios.length;i++){
+                    if((i+1)<precios.length){
+                        if(precioDig>=precios[i].precio && precioDig<precios[i+1].precio){
+                            letra=precios[i].tipo;
+                            i=precios.length;
+                        }
+                    }else{
+                        letra=precios[i].tipo;
+                        i=precios.length;
+                    }
+                }
+                $("#tipoPrecio").val(letra);
+                var idPrecio=0;
+                var preciosOriginales=[];
+                if (cliente.clase == "D") {
+                    preciosOriginales = producto.uom[$("#uom").val()].preciosTienda;
+                } else {
+                    preciosOriginales = producto.uom[$("#uom").val()].precios;
+                }
+                for(var i=0;i<preciosOriginales.length;i++){
+                    if((i+1)<preciosOriginales.length){
+                        if(precioDig>=preciosOriginales[i].precio && precioDig<preciosOriginales[i+1].precio){
+                            idPrecio=i;
+                            i=precios.length;
+                        }
+                    }else{
+                        idPrecio=i;
+                        i=precios.length;
+                    }
+                }
+                $("#idPrecio").val(idPrecio);
+            }
         }
     }
     //Comienza validacion de productos del tipo surtido
@@ -558,6 +597,7 @@ function updatePrecio() {
     if (cliente.clase == "D") {
         //Coloco primero los precios al detalle
         $("#preciosDisponibles").append('<h6 class="dropdown-header">Detalle</h6>');
+        preciosActuales=producto.uom[uom].preciosTienda;
         $.each(producto.uom[uom].preciosTienda, function (i, item) {
 
             if (parseFloat(cnt) > parseFloat(item.desde)) { //&& parseFloat(cnt) < parseFloat(item.hasta)
@@ -571,6 +611,7 @@ function updatePrecio() {
         });
     } else {
         $("#preciosDisponibles").append('<div class="dropdown-divider"></div><h6 class="dropdown-header">Mayoreo</h6>');
+        preciosActuales=producto.uom[uom].precios;
         $.each(producto.uom[uom].precios, function (i, item) {
             if (parseFloat(cnt) > parseFloat(item.desde)) { // && parseFloat(cnt) < parseFloat(item.hasta)
                 if (parseFloat(item.precio) < precioMasBajo) {
