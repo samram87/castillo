@@ -294,6 +294,10 @@ function getPedido(clienteActual) {
 
 function getPosicionPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
+    var pos=Number(getLS("posicionPedido"));
+    if(pos>=0){
+        return pos;
+    }
     var x=-1;
     for(var i=0; i<pedidos.length;i++) {
         var item=pedidos[i];
