@@ -279,7 +279,7 @@ function pedidoExistente(clienteActual) {
 
 function getPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
-    var pos=JSON.parse(getLS("posicionPedido"));
+    var pos=Number(getLS("posicionPedido"));
     if(codigo>=0){
         return pedidos[pos];
     }
