@@ -570,7 +570,7 @@ function updatePrecio() {
         preciosActuales=producto.uom[uom].preciosTienda;
         $.each(producto.uom[uom].preciosTienda, function (i, item) {
 
-            if (parseFloat(cnt) > parseFloat(item.desde)) { //&& parseFloat(cnt) < parseFloat(item.hasta)
+            if (parseFloat(cnt) >= parseFloat(item.desde)) { //&& parseFloat(cnt) < parseFloat(item.hasta)
                 if (parseFloat(item.precio) < precioMasBajo) {
                     precioMasBajo = parseFloat(item.precio);
                 }

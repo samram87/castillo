@@ -55,7 +55,7 @@ $(document).ready(function () {
         }, 2000);
     } else {
         setTimeout(function () {
-            if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" ){
+            if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" && checkInternet()){
                 alerta("Debe tener activo el GPS para poder realizar un pedido");
                 allow_exit=true;
                 setTimeout(function () {
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 pedido.latitud = APP.latitud;
                 pedido.longitud = APP.longitud;
             }
-        }, 3000);
+        }, 4000);
     }
 
     if (estado.cerrado) {
@@ -279,6 +279,10 @@ function pedidoExistente(clienteActual) {
 
 function getPedido(clienteActual) {
     var pedidos = JSON.parse(getLS("pedidos"));
+    var pos=JSON.parse(getLS("posicionPedido"));
+    if(codigo>=0){
+        return pedidos[pos];
+    }
     var p = null;
     $.each(pedidos, function (i, item) {
         if (clienteActual.codigo == item.cliente.codigo) {
@@ -600,7 +604,7 @@ function updatePrecio() {
         preciosActuales=producto.uom[uom].preciosTienda;
         $.each(producto.uom[uom].preciosTienda, function (i, item) {
 
-            if (parseFloat(cnt) > parseFloat(item.desde)) { //&& parseFloat(cnt) < parseFloat(item.hasta)
+            if (parseFloat(cnt) >= parseFloat(item.desde)) { //&& parseFloat(cnt) < parseFloat(item.hasta)
                 if (parseFloat(item.precio) < precioMasBajo) {
                     precioMasBajo = parseFloat(item.precio);
                 }

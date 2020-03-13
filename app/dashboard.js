@@ -154,7 +154,7 @@ function crearTablaPedidos() {
         );
         //if (item.status == "LOCAL") {
             if (item.tipo == "PEDIDO") {
-                $(tr).append($('<td>').html('<button class="btn btn-success" onclick="nuevoPedido(\'' + item.cliente.codigo + '\')"><i class="fas fa-fw fa-cart-plus"></i> Ver</button>'));
+                $(tr).append($('<td>').html('<button class="btn btn-success" onclick="editarPedido('+i+'\'' + item.cliente.codigo + '\')"><i class="fas fa-fw fa-cart-plus"></i> Ver</button>'));
             } else {
                 $(tr).append($('<td>').html('NO VENTA'));
             }
@@ -237,6 +237,13 @@ function doSincronize(callback,failCallback) {
 
 
 function nuevoPedido(codigoCliente) {
+    setLS("posicionPedido",-1);
+    setLS("cliente", codigoCliente);
+    goto("pedidos.html");
+}
+
+function editarPedido(posicion,codigoCliente) {
+    setLS("posicionPedido",posicion);
     setLS("cliente", codigoCliente);
     goto("pedidos.html");
 }
