@@ -55,13 +55,16 @@ $(document).ready(function () {
         }, 2000);
     } else {
         setTimeout(function () {
-            if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" && checkInternet()){
-                alerta("Debe tener activo el GPS para poder realizar un pedido");
-                allow_exit=true;
-                setTimeout(function () {
+            checkConnection(function(is_internet){
+                if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" && is_internet){
+                    alerta("Debe tener activo el GPS para poder realizar un pedido");
+                    allow_exit=true;
+                    setTimeout(function () {
                        goto("dashboard.html");
                     }, 2000);
-            }
+                }
+            });
+            
             if (!areWeNear(cliente, 1.1)) {
                 //alerta("Se encuentra muy alejado de la ubicación del cliente. Por favor acerquese más.");
                 //

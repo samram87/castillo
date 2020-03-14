@@ -88,13 +88,28 @@ function checkInternet() {
         var networkState = navigator.connection.type;
         if (networkState == Connection.NONE) {
             return false;
-        } else { return true; }
+        } else {
+            
+            return true; }
     }catch(ex){
         return true;
     }
     
 }
 
+
+function checkConnection(call_back) {
+    $.ajax({
+        url: APP.url+"check.php?code="+getUuid(),
+        error: function(){
+            call_back(false);
+        },
+        success: function(){
+            call_back(true);
+        },
+        timeout: 10000 // sets timeout to 10 seconds
+    });
+}
 
 function toDataTable(selector) {
     $(selector).DataTable({
