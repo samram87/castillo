@@ -56,7 +56,7 @@ $(document).ready(function () {
     } else {
         setTimeout(function () {
             checkConnection(function(is_internet){
-                if(APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="" && is_internet){
+                if((APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="") && is_internet){
                     alerta("Debe tener activo el GPS para poder realizar un pedido");
                     allow_exit=true;
                     setTimeout(function () {
