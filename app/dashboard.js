@@ -354,7 +354,7 @@ function generarGrafico() {
     $("#vendedor").html(user.nombre);
     $("#clientesVisitados").html((cntClientesPedido+cntClientesNoVenta));
     $("#pedidosRealizados").html(cntClientesPedido);
-    $("#noVentas").html(cntClientesNoVenta);
+    //$("#noVentas").html(cntClientesNoVenta);
     //$("#ventasDetalle").html(getMoneyValue(ventasDetalle));
     //$("#ventasMayoreo").html(getMoneyValue(ventasMayoreo));
     $("#ventasA").html(cantidadSinIva(total_a));
@@ -364,7 +364,9 @@ function generarGrafico() {
     $("#inexiB").html(cantidadSinIva(inex_b));
     $("#inexiC").html(cantidadSinIva(inex_c));
     $("#totalVentas").html(cantidadSinIva(totalVentas));
-    $("#ventaInsuficiente").html(ventaInsuficiente);
+    $("#ventaInsuficiente").html(cantidadSinIva(inex_a+inex_b+inex_c));
+    $("#status").html((estado.cerrado?"Si":"No"));
+    $("#fechaVenta").html(new Date().toLocaleDateString('es-SV'));
     if(pedidos.length>0){
         $("#primerPedido").html(getTimeStamp(lesstime));
         $("#ultimoPedido").html(getTimeStamp(maxtime));
