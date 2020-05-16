@@ -127,7 +127,7 @@ $(document).ready(function () {
             linea.uuid=getUuid();
             if(linea.cantidad>parseFloat($("#existencia").val())){
                 linea.insuficiente=true;
-                linea.cantidadInsuficiente=linea.cantidad-parseFloat($("#existencia").val());
+                linea.cantidadInsuficiente=linea.cantidad-(parseFloat($("#existencia").val())<0?0:parseFloat($("#existencia").val()));
             }
             linea.uom = producto.uom[$("#uom").val()];
             linea.observacion = $("#observacionLinea").val();
