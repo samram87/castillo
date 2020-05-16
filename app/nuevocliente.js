@@ -94,9 +94,11 @@ $(document).ready(function () {
             linea.producto.nombre=producto.nombre;
             linea.cantidad = parseFloat($("#cantidad").val());
             linea.insuficiente=false;
+            linea.cantidadInsuficiente=0;
             linea.uuid=getUuid();
             if(linea.cantidad>parseFloat($("#existencia").val())){
                 linea.insuficiente=true;
+                linea.cantidadInsuficiente=linea.cantidad-parseFloat($("#existencia").val());
             }
             linea.uom = producto.uom[$("#uom").val()];
             linea.observacion = $("#observacionLinea").val();

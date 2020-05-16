@@ -7,8 +7,11 @@ var ventaInsuficiente=0;
 var lesstime=9999999999999;
 var maxtime=0;
 var total_a=0;
+var inex_a=0;
 var total_b=0;
+var inex_b=0;
 var total_c=0;
+var inex_c=0;
 
 $(document).ready(function() {
     estado = JSON.parse(getLS("estado"));
@@ -51,7 +54,11 @@ $(document).ready(function() {
                              ultimoPedido:maxtime,
                              totalA:total_a,
                              totalB:total_b,
-                             totalC:total_c },
+                             totalC:total_c,
+                             inexistenciaA:inex_a,
+                             inexistenciaB:inex_b,
+                             inexistenciaC:inex_c
+                         },
                         success:function(data){
                             alerta("Cierre exitoso");
                             estado.abierto = false;
@@ -311,11 +318,20 @@ function generarGrafico() {
                 if(p.lineas[j].tipoPrecio=="C"){
                     ventasMayoreo+=p.lineas[j].total;
                     total_c+=p.lineas[j].total;
+                    if(p.lineas[j].insuficiente){
+                        inex_c+=p.lineas[j].cantidadInsuficiente*p.lineas[j].precio;
+                    }
                 }else{
                     if(p.lineas[j].tipoPrecio=="A"){
                         total_a+=p.lineas[j].total;
+                        if(p.lineas[j].insuficiente){
+                            inex_a+=parseFloat(p.lineas[j].cantidadInsuficiente)*parseFloat(p.lineas[j].precio);
+                        }
                     }else if(p.lineas[j].tipoPrecio=="B"){
                         total_b+=p.lineas[j].total;
+                        if(p.lineas[j].insuficiente){
+                            inex_b+=p.lineas[j].cantidadInsuficiente*p.lineas[j].precio;
+                        }
                     }
                     ventasDetalle+=p.lineas[j].total;
                 }
@@ -341,10 +357,13 @@ function generarGrafico() {
     $("#noVentas").html(cntClientesNoVenta);
     //$("#ventasDetalle").html(getMoneyValue(ventasDetalle));
     //$("#ventasMayoreo").html(getMoneyValue(ventasMayoreo));
-    $("#ventasA").html(getMoneyValue(total_a));
-    $("#ventasB").html(getMoneyValue(total_b));
-    $("#ventasC").html(getMoneyValue(total_c));
-    $("#totalVentas").html(getMoneyValue(totalVentas));
+    $("#ventasA").html(cantidadSinIva(total_a));
+    $("#ventasB").html(cantidadSinIva(total_b));
+    $("#ventasC").html(cantidadSinIva(total_c));
+    $("#inexiA").html(cantidadSinIva(inex_a));
+    $("#inexiB").html(cantidadSinIva(inex_b));
+    $("#inexiC").html(cantidadSinIva(inex_c));
+    $("#totalVentas").html(cantidadSinIva(totalVentas));
     $("#ventaInsuficiente").html(ventaInsuficiente);
     if(pedidos.length>0){
         $("#primerPedido").html(getTimeStamp(lesstime));
@@ -367,6 +386,12 @@ function generarGrafico() {
     });
 
 }
+
+function cantidadSinIva(number){
+    var net=number/1.13;
+    return getMoneyValue(net);
+}
+
 
 function getMoneyValue(number){
     var value='';

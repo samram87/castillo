@@ -57,11 +57,11 @@ $(document).ready(function () {
         setTimeout(function () {
             checkConnection(function(is_internet){
                 if((APP.latitud== null || APP.latitud== undefined ||  APP.latitud=="") && is_internet){
-                    alerta("Debe tener activo el GPS para poder realizar un pedido");
+                    /*alerta("Debe tener activo el GPS para poder realizar un pedido");
                     allow_exit=true;
                     setTimeout(function () {
                        goto("dashboard.html");
-                    }, 2000);
+                    }, 2000);*/
                 }
             });
             
@@ -123,9 +123,11 @@ $(document).ready(function () {
             linea.producto.nombre=producto.nombre;
             linea.cantidad = parseFloat($("#cantidad").val());
             linea.insuficiente=false;
+            linea.cantidadInsuficiente=0;
             linea.uuid=getUuid();
             if(linea.cantidad>parseFloat($("#existencia").val())){
                 linea.insuficiente=true;
+                linea.cantidadInsuficiente=linea.cantidad-parseFloat($("#existencia").val());
             }
             linea.uom = producto.uom[$("#uom").val()];
             linea.observacion = $("#observacionLinea").val();
