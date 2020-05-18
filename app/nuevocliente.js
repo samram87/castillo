@@ -123,19 +123,31 @@ $(document).ready(function () {
             linea.cantidadHijos = 0;
             if (producto.hijos > 0) {
                 var surtido = [];
+                linea.insuficiente=false;
+                linea.cantidadInsuficiente=0;
                 $(".cnt_surtido").each(function (i, item) {
                     if ($(item).val() != '') {
                         //Tiene valor hay que agregarlo
-                        console.log(item);
-
+                       console.log(item);
                         var pos = $(item).attr("corr");
                         console.log(pos);
-                        var cnt = $(item).val();
+                        var producto_hijo=getProducto(producto.surtido[pos].codigoProducto);
+                        var codi_medi_ori = producto.uom[$("#uom").val()].uom;
+                        var codi_medi_dest =  producto_hijo.uom[$(".uomHijo[corr="+pos+"]").val()].uom;
+                        var fact_conv = parseFloat(obtenerFactorConversion(producto, codi_medi_ori, codi_medi_dest));
+                        var cnt = parseFloat($(item).val());
                         var surtLine = {};
                         surtLine.hijo = producto.surtido[pos];
                         surtLine.cnt = cnt;
                         surtLine.uuid=getUuid();
-                        //surtLine.uom=producto.hijos[pos].uom;
+                        surtLine.cantidadInsuficiente=0;
+                        var existencia=getExistencia(producto_hijo);
+                        if(existencia<parseFloat(cnt)){
+                            var inexistencia=parseFloat(cnt)-existencia;
+                            surtLine.cantidadInsuficiente=inexistencia;
+                            linea.cantidadInsuficiente+=parseFloat(inexistencia/fact_conv);
+                            linea.insuficiente=true;
+                        }
                         surtido.push(surtLine);
                     }
                 });
