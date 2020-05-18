@@ -172,6 +172,7 @@ $(document).ready(function () {
                         surtLine.hijo = producto.surtido[pos];
                         surtLine.cnt = cnt;
                         surtLine.uuid=getUuid();
+                        surtLine.uom=codi_medi_dest;
                         surtLine.cantidadInsuficiente=0;
                         var existencia=getExistencia(producto_hijo);
                         if(existencia<parseFloat(cnt)){
