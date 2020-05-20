@@ -130,7 +130,8 @@ function crearTablaPendientes(clientesPendientes) {
         "<div class='col-sm-6'><strong>"+item.codigoCliente + "</strong></div><div class='col-sm-6'><strong>"+ item.cliente+"</strong></div>"+
         "</div>"+
         "<div class='row'>"+
-        "<div class='col-sm-12'>"+item.nombreComercial+"</div></div><div class='row'>";
+        "<div class='col-sm-12'>"+item.nombreComercial+"</div></div><div class='row'>"+
+        "<div class='col-sm-12'>("+item.municipio+")</div></div><div class='row'>";
 
         if (estado.abierto) {
             table+='<div class="col-sm-12"><button class="btn btn-success" onclick="nuevoPedido(\'' + item.codigoCliente + '\')"><i class="fas fa-fw fa-cart-plus"></i> Pedido</button>'+
