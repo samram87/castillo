@@ -43,7 +43,11 @@ $(document).ready(function () {
 function cierreAutomatico() {
     if (esHora() && checkInternet()) {
         try {
-            navigator.notification.alert("Se procedera a hacer el cierre automatico", function () {});
+            document.addEventListener("deviceready", onDeviceReady, false);
+            function onDeviceReady() {
+                navigator.notification.alert("Se procedera a hacer el cierre automatico", function () {});
+                navigator.vibrate;
+            }           
         } catch (e) {
 
         } finally {
