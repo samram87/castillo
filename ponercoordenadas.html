@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Dashboard</title>
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+        <link href="css/sb-admin.css" rel="stylesheet">
+    </head>
+    <body id="page-top">
+        <style>
+            #modalProductos{
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .productosContent{
+                height: auto;
+                min-height: 100%;
+                border-radius: 0;
+            }
+        </style>
+        <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+            <a class="navbar-brand mr-1" href="dashboard.html">Castillo</a>
+            <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- Navbar Search -->
+            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+
+            </form>
+            <!-- Navbar -->
+            <ul class="navbar-nav ml-auto ml-md-0">
+
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-fw"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div id="wrapper">
+            <!--
+          MENU
+            -->  
+
+            <div id="content-wrapper">
+
+                <div class="container-fluid">
+
+
+                    <!-- Breadcrumbs-->
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="dashboardsupervisor.html">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active">Establecer Coordenadas</li>
+                    </ol>
+
+                    <form>
+                        <div class="form-group">
+                            <div class="alert alert-success" role="alert"  id="alertaGPS">
+                                <strong>¡Atención!</strong> Las coordenadas actuales serán almacenadas como su posición geográfica. 
+                                Por favor verifique que este en la ubicacion correcta.
+                            </div>
+                            <label for="cliente">Nombre del Cliente</label>
+                            <input type="text"  class="form-control" id="cliente">
+                        </div>
+                        <div class="form-group">
+                            <label for="departamento">Departamento</label>
+                            <select class="form-control" id="departamento" >
+                                <option value="" selected >-- Seleccione --</option>
+                                <option value="01">AHUACHAPAN</option>
+                                <option value="09">CABAÑAS</option>
+                                <option value="04">CHALATENANGO</option>
+                                <option value="07">CUSCATLAN</option>
+                                <option value="05">LA LIBERTAD</option>
+                                <option value="08">LA PAZ</option>
+                                <option value="14">LA UNION</option>
+                                <option value="13">MORAZAN</option>
+                                <option value="12">SAN MIGUEL</option>
+                                <option value="06">SAN SALVADOR</option>
+                                <option value="10">SAN VICENTE</option>
+                                <option value="02">SANTA ANA</option>
+                                <option value="03">SONSONATE</option>
+                                <option value="11">USULUTAN</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="municipio"></label>
+                            <select class="form-control" id="municipio" >
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="direccion">Direccion</label>
+                            <textarea class="form-control" id="direccion" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="direccion">Latitud y Longitud</label>
+                            <span id="lat_long" ></span>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="button" class="btn btn-success" id="ponerCoordenadas" style="display: none" ><i class="fas fa-save"></i> Guardar</button>
+                            </div>
+                        </div>
+                        <div class="row" id="progressbar">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">Cargando GPS</div>
+                        </div>
+                    </form>
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+                <!-- Sticky Footer -->
+                <footer class="sticky-footer">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Todos los Derechos Reservados © Distribuidora Castillo - 2021</span>
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+            <!-- /.content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Salir de la Aplicación</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Haga click en Cerrar Sesión si desea salir del sistema. Para volver a entrar debera recargar todos los modelos con conexión activa a internet.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-primary" href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Comercial Castillo</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalInfoText"></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+
+                <div class="modal-content productosContent">
+                    <div class="modal-body" >
+                        <form>
+                            <div class="input-group mb-3">
+                                <input type="search" id="buscadorProductos" class="form-control search" placeholder="Buscar Productos.." aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" onclick="clearSearchProd()" id="basic-addon2">X</span>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="list-group" id="listadoProductos">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Page level plugin JavaScript-->
+        <script src="vendor/chart.js/Chart.min.js"></script>
+        <script src="vendor/datatables/jquery.dataTables.js"></script>
+        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin.min.js"></script>
+
+        <!-- Archivo Util -->
+        <script src="app/utils.js"></script>
+        <!-- Archivo Control -->
+        <script src="app/control.js"></script>
+
+        <!-- Archivo Dashboard -->
+        <script src="app/coordenadas.js"></script>
+    </body>
+
+</html>

@@ -19,7 +19,6 @@ function cargarUsuario(){
             }
         });
         if(encontrado){
-           
             var usuario=JSON.parse(window.localStorage.getItem("usuario"));
             cargarInfoUser();
             $("#login").hide(500,function(){

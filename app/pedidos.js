@@ -413,7 +413,13 @@ function validarLinea() {
         alerta("Digite la cantidad");
         return false;
     }
-
+    
+    
+    if (parseFloat($("#cantidad").val()) > parseFloat(producto.uom[$("#uom").val()].limite)) {
+        alerta("La cantidad supera el limite de venta de este producto ("+producto.uom[$("#uom").val()].limite+")");
+        return false;
+    }
+    
     if ($("#precio").val() == "" || parseFloat($("#precio").val()) == 0) {
         alerta("Ingrese o seleccione el precio de venta");
         return false;
