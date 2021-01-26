@@ -12,6 +12,8 @@ var total_b = 0;
 var inex_b = 0;
 var total_c = 0;
 var inex_c = 0;
+var total_d = 0;
+var inex_d = 0;
 
 $(document).ready(function () {
     var usuario = JSON.parse(getLS("usuario"));
@@ -124,9 +126,11 @@ function cierreAutomatico() {
                         totalA: total_a,
                         totalB: total_b,
                         totalC: total_c,
+                        totalD: total_d,
                         inexistenciaA: inex_a,
                         inexistenciaB: inex_b,
-                        inexistenciaC: inex_c
+                        inexistenciaC: inex_c,
+                        inexistenciaD: inex_d
                     },
                     success: function (data) {
                         alerta("Cierre exitoso");
@@ -402,6 +406,11 @@ function generarGrafico() {
                         if (p.lineas[j].insuficiente) {
                             inex_b += p.lineas[j].cantidadInsuficiente * p.lineas[j].precio;
                         }
+                    }else if (p.lineas[j].tipoPrecio == "D") {
+                        total_d += p.lineas[j].total;
+                        if (p.lineas[j].insuficiente) {
+                            inex_d += p.lineas[j].cantidadInsuficiente * p.lineas[j].precio;
+                        }
                     }
                     ventasDetalle += p.lineas[j].total;
                 }
@@ -430,9 +439,11 @@ function generarGrafico() {
     $("#ventasA").html(cantidadSinIva(total_a));
     $("#ventasB").html(cantidadSinIva(total_b));
     $("#ventasC").html(cantidadSinIva(total_c));
+    $("#ventasD").html(cantidadSinIva(total_d));
     $("#inexiA").html(cantidadSinIva(inex_a));
     $("#inexiB").html(cantidadSinIva(inex_b));
     $("#inexiC").html(cantidadSinIva(inex_c));
+    $("#inexiD").html(cantidadSinIva(inex_d));
     $("#totalVentas").html(cantidadSinIva(totalVentas));
     $("#ventaInsuficiente").html(cantidadSinIva(inex_a + inex_b + inex_c));
     $("#status").html((estado.cerrado ? "Si" : "No"));
