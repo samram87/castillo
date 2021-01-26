@@ -95,18 +95,20 @@ $(document).ready(function () {
 
 
     //Si es hora del cierre y hay internet
-    cierreAutomatico();
+    setTimeout(function () {
+            cierreAutomatico();
+        }, 150000);
+
 
 });
 
 function cierreAutomatico() {
     if (esHora() && checkInternet() && !estado.cerrado) {
         try {
-            document.addEventListener("deviceready", onDeviceReady, false);
-            function onDeviceReady() {
-                navigator.notification.alert("Se procedera a hacer el cierre automatico", function () {});
-                navigator.vibrate;
-            }
+
+            navigator.notification.alert("Se procedera a hacer el cierre automatico", function () {});
+            navigator.vibrate;
+ cordova.plugins.notification.local.schedule({title: 'App Castillo', text: 'Debe sincronizar datos pronto'});
         } catch (e) {
 
         } finally {
