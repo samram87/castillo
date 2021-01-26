@@ -41,7 +41,7 @@ $(document).ready(function () {
 
 
 function cierreAutomatico() {
-    if (esHora() && checkInternet()) {
+    if (esHora() && checkInternet() && getLS("cerrado")===false) {
         try {
             document.addEventListener("deviceready", onDeviceReady, false);
             function onDeviceReady() {
@@ -53,6 +53,7 @@ function cierreAutomatico() {
         } finally {
             doSincronize(function () {
                 alerta("Clientes Sincronizados");
+                setLS("cerrado",true);
                 setTimeout(function () {
                     goto("dashboardsupervisor.html");
                 }, 1500);

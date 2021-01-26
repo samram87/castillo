@@ -84,7 +84,7 @@ function sincronizarDatos() {
                         setLS("fechaActualizacion", fecha);
                         goto("dashboard.html");
                     }
-                }, 500);
+                }, 1500);
             });
         });
     });
