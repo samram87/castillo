@@ -33,25 +33,37 @@ $(document).ready(function () {
         //$("#sincronizar").removeClass("btn-success");
     }
     generarResumen();
-    
+
     //Si es hora del cierre y hay internet
     cierreAutomatico();
 
 });
 
 
-function cierreAutomatico(){
-    if(esHora() && checkInternet()){
-        try{
-            navigator.notification.alert("Se procedera a hacer el cierre automatico", function(){}); 
-        }catch(e){
-            
-        }finally {
-            sincronizarClientes();
+function cierreAutomatico() {
+    if (esHora() && checkInternet()) {
+        try {
+            navigator.notification.alert("Se procedera a hacer el cierre automatico", function () {});
+        } catch (e) {
+
+        } finally {
+            doSincronize(function () {
+                alerta("Clientes Sincronizados");
+                setTimeout(function () {
+                    goto("dashboardsupervisor.html");
+                }, 1500);
+            }, function () {
+                alerta("No pudieron ser sincronizadas las transacciones por favor intente en un lugar con mejor señal de internet");
+                setTimeout(function () {
+                    //goto("dashboard.html");
+                }, 10000);
+            });
         }
-        
-    }else{
-        setTimeout(function(){cierreAutomatico();},300000);
+
+    } else {
+        setTimeout(function () {
+            cierreAutomatico();
+        }, 300000);
     }
 }
 
@@ -192,7 +204,7 @@ function doSincronize(callback, failCallback) {
     $.ajax({
         type: "POST",
         url: APP.url + "dal/sincronizar_clientes.php",
-        data: {clientes: JSON.stringify(pedToSend), idUsuario: getIdUsuario(), ruta:getLS("ruta")},
+        data: {clientes: JSON.stringify(pedToSend), idUsuario: getIdUsuario(), ruta: getLS("ruta")},
         async: false,
         success: function (data) {
             console.log(data);
