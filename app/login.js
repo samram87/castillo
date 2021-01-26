@@ -130,6 +130,7 @@ function selectRuta() {
                     setLS("estado", JSON.stringify(estado));
                 }
             }
+            setLS("cerrado",false);
             setLS("ruta",$("#selector_ruta").val());
             setLS("clientesVisitados", JSON.stringify([]));
             setLS("fechaActualizacion", getFecha());
