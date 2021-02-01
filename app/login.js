@@ -103,7 +103,10 @@ function cargarRutas() {
 
         $("#div_ruta").show();
         $("#btnRuta").show();
-        $("#loadingModal").modal('hide');
+        setTimeout(function(){
+            $("#loadingModal").modal('hide');
+        },1500);
+        
         setLS("rutas", data);
     });
 }
