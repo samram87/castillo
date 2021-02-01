@@ -369,6 +369,20 @@ function validarLinea() {
         alerta("Digite la cantidad");
         return false;
     }
+    
+    
+    if(producto.limites.length>0){
+        var uomLim=producto.limites[0].uom;
+        var cantidad=parseFloat(producto.limites[0].limite);
+        var cntLinea = parseFloat($("#cantidad").val()) * producto.uom[$("#uom").val()].cnt;
+        var uomReq = obtenerUomProd(producto, uomLim);
+        var cntReq = cantidad * parseFloat(uomReq.cnt);
+        if (cntLinea<cntReq) {
+            alerta("La cantidad es menor al minimo de venta permitido de este producto ("+producto.uom[$("#uom").val()].limite+")");
+            return false;
+        }
+    }
+    
 
     if ($("#precio").val() == "" || parseFloat($("#precio").val()) == 0) {
         alerta("Ingrese o seleccione el precio de venta");

@@ -25,10 +25,18 @@ $(document).ready(function () {
     $("#departamento").change(function(){
         setMunicipios($("#departamento").val(),"#municipio");
     });
+    
+    $("#municipio").change(function(){
+        setCantones($("#municipio").val(),"#canton");
+    });
 
     $("#ponerCoordenadas").click(function(){
         if($("#cliente").val()==""){
              alerta("Por favor ingrese el nombre del cliente");
+            return;
+        }
+        if($("#nombreComercial").val()==""){
+             alerta("Por favor ingrese el nombre comercial del cliente");
             return;
         }
         if($("#departamento").val()==""){
@@ -48,6 +56,8 @@ $(document).ready(function () {
         cliente.nombre=$("#cliente").val();
         cliente.direccion=$("#direccion").val();
         cliente.CODI_MUNI=$("#municipio").val();
+        cliente.CODI_CANT=$("#canton").val();
+        cliente.nombreComercial=$("#nombreComercial").val();
         cliente.municipio=$( "#municipio option:selected" ).text();
         cliente.departamento=$( "#departamento option:selected" ).text();
         if(APP.latitud!=""){

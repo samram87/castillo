@@ -25,7 +25,7 @@ function cargarUsuario() {
     } else {
         var hash = CryptoJS.MD5($("#password").val());
         var user = $("#user").val().toLowerCase();
-        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash + "&version=1.5", function (data) {
+        $.get(APP.url + "login.php?user=" + user + "&pass=" + hash + "&version=1.6", function (data) {
             var usuario = data;
             if (usuario.length > 0) {
                 window.localStorage.setItem("usuario", JSON.stringify(usuario[0]));
@@ -98,7 +98,7 @@ function cargarRutas() {
         $("#div_user").hide();
         $("#div_pass").hide();
         data.forEach(function (ruta, i) {
-            $("#selector_ruta").append("<option value='" + ruta.codigo + "'>" + ruta.nombre + ' (' + ruta.cantidad + ')</option>');
+            $("#selector_ruta").append("<option value='" + ruta.codigo + "'>" + ruta.vendedor + '</option>');
         });
 
         $("#div_ruta").show();
@@ -110,7 +110,7 @@ function cargarRutas() {
 
 function selectRuta() {
     if ($("#ruta").val() == "") {
-        alerta('Por favor seleccione ruta');
+        alerta('Por favor seleccione el vendedor');
     } else {
         $("#modalLoadingText").html("Cargando Clientes...");
         $("#loadingModal").modal('show');
@@ -131,7 +131,7 @@ function selectRuta() {
                 }
             }
             setLS("cerrado",false);
-            setLS("ruta",$("#selector_ruta").val());
+            setLS("ruta","001");
             setLS("clientesVisitados", JSON.stringify([]));
             setLS("fechaActualizacion", getFecha());
             goto("dashboardsupervisor.html");

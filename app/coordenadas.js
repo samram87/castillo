@@ -19,6 +19,7 @@ $(document).ready(function () {
     var muni=getMunicipio(cliente.CODI_MUNI);
     $("#departamento").val(muni.CODI_DEPA);
     setMunicipios(muni.CODI_DEPA,"#municipio",cliente.CODI_MUNI);
+    setCantones(cliente.CODI_MUNI,"#canton",cliente.CODI_MUNI);
     $("#direccion").val(cliente.direccion);
     $("#lat_long").val(APP.latitud+' ; '+APP.longitud);
     
@@ -26,6 +27,10 @@ $(document).ready(function () {
     $("#departamento").change(function(){
         setMunicipios($("#departamento").val(),"#municipio");
     });
+    $("#municipio").change(function(){
+        setCantones($("#municipio").val(),"#canton");
+    });
+
 
     $("#ponerCoordenadas").click(function(){
         if($("#cliente").val()==""){
@@ -40,8 +45,16 @@ $(document).ready(function () {
              alerta("Por favor ingrese el municipio del cliente");
             return;
         }
+        if($("#canton").val()==""){
+             alerta("Por favor ingrese el canton del cliente");
+            return;
+        }
         if($("#direccion").val()==""){
              alerta("Por favor ingrese la direccion del cliente");
+            return;
+        }
+        if($("#nombreComercial").val()==""){
+             alerta("Por favor ingrese el nombre comercial del cliente");
             return;
         }
     
@@ -49,6 +62,8 @@ $(document).ready(function () {
         cliente.nombre=$("#cliente").val();
         cliente.direccion=$("#direccion").val();
         cliente.CODI_MUNI=$("#municipio").val();
+        cliente.CODI_CANT=$("#canton").val();
+        cliente.nombreComercial=$("#nombreComercial").val();
         cliente.municipio=$( "#municipio option:selected" ).text();
         cliente.departamento=$( "#departamento option:selected" ).text();
         if(APP.latitud!=""){

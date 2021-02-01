@@ -414,11 +414,21 @@ function validarLinea() {
         return false;
     }
     
-    
-    if (parseFloat($("#cantidad").val()) > parseFloat(producto.uom[$("#uom").val()].limite)) {
-        alerta("La cantidad supera el limite de venta de este producto ("+producto.uom[$("#uom").val()].limite+")");
-        return false;
+    if(producto.limites.length>0){
+        var uomLim=producto.limites[0].uom;
+        var cantidad=parseFloat(producto.limites[0].limite);
+        var cntLinea = parseFloat($("#cantidad").val()) * producto.uom[$("#uom").val()].cnt;
+        var uomReq = obtenerUomProd(producto, uomLim);
+        var cntReq = cantidad * parseFloat(uomReq.cnt);
+        var fact_conv=obtenerFactorConversion(producto,uomLim,producto.uom[$("#uom").val()].uom);
+        var cntDisplay=fact_conv*cntReq;
+        if (cntLinea<cntReq) {
+            alerta("La cantidad es menor al minimo de venta permitido de este producto ("+cntDisplay+")");
+            return false;
+        }
     }
+    
+    
     
     if ($("#precio").val() == "" || parseFloat($("#precio").val()) == 0) {
         alerta("Ingrese o seleccione el precio de venta");
