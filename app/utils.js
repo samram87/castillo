@@ -268,7 +268,7 @@ function esHora(){
     var usuario=JSON.parse(getLS("usuario"));
     var sincronizar=parseInt(usuario.minutodia);
     if(minutos>=sincronizar){
-        return true;
+        return false;
     }else{
         return false;
     }
